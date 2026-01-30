@@ -1,0 +1,2618 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rye&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+    <title>Truco Pro - Progressão 3, 6, 9, 12</title>
+    <style>
+      :root {
+        --cor-nos: #2ecc71;
+        --cor-eles: #3498db;
+        --accent: #d4ac0d;
+        --danger: #c0392b;
+        --gold: #f1c40f;
+        --madeira-escura: #3e2723;
+        --madeira-clara: #6d4c41;
+        --feltro: #27ae60;
+        --bg-color: #2c1810;
+      }
+
+      body {
+        background: var(--bg-color); /* Fallback */
+        background: radial-gradient(circle at center, #4e342e 0%, #1a0f00 100%);
+        font-family: "Roboto Slab", serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        color: #f5e6ca; /* Cor de pergaminho claro */
+        overflow: hidden;
+      }
+      
+      /* Western Animations */
+      @keyframes roll {
+          from { transform: translateX(-100vw) rotate(0deg); }
+          to { transform: translateX(100vw) rotate(360deg); }
+      }
+      .western-bg-decor {
+          position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
+          pointer-events: none; z-index: 1; overflow: hidden;
+      }
+      .sun {
+          position: absolute; top: 10%; left: 50%; transform: translateX(-50%);
+          width: 300px; height: 300px; background: radial-gradient(circle, #ffcc80 0%, transparent 70%);
+          opacity: 0.3; border-radius: 50%;
+      }
+      .cactus {
+          position: absolute; bottom: 0; font-size: 100px; opacity: 0.4; color: #2e1e18;
+      }
+      .c1 { left: 10%; bottom: -20px; transform: scale(1.5); }
+      .c2 { right: 15%; bottom: -10px; transform: scale(1.2) rotate(5deg); }
+      .tumbleweed {
+          position: absolute; bottom: 50px; font-size: 40px; opacity: 0.6;
+          animation: roll 15s linear infinite;
+      }
+
+      #painel-controle {
+        width: 160px;
+        padding: 15px;
+        background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyMCcgaGVpZ2h0PScyMCc+PHJlY3Qgd2lkdGg9JzIwJyBoZWlnaHQ9JzIwJyBmaWxsPScjNWQ0MDM3Jy8+PHBhdGggZD0nTTUgNUwxNSAxNScgc3Ryb2tlPScjM2UyNzIzJyBzdHJva2Utd2lkdGg9JzEnIG9wYWNpdHk9JzAuNScvPjwvc3ZnPg==');
+        border-radius: 10px;
+        margin-right: 20px;
+        text-align: center;
+        border: 4px solid #8d6e63;
+        box-shadow: 2px 5px 10px rgba(0,0,0,0.5);
+        color: #f5e6ca;
+        position: relative;
+      }
+      #painel-controle::before {
+          content: '★'; position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+          font-size: 24px; color: var(--gold); text-shadow: 0 2px 2px rgba(0,0,0,0.5);
+          background: #3e2723; border-radius: 50%; padding: 2px 8px; border: 2px solid #8d6e63;
+      }
+      .score {
+        font-size: 40px;
+        font-weight: 900;
+        margin-bottom: 5px;
+      }
+
+      #contador-rodadas {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin: 10px 0;
+      }
+      .queda-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: all 0.3s;
+      }
+      .queda-nos {
+        background: var(--cor-nos);
+        box-shadow: 0 0 10px var(--cor-nos);
+        border: none;
+      }
+      .queda-eles {
+        background: var(--cor-eles);
+        box-shadow: 0 0 10px var(--cor-eles);
+        border: none;
+      }
+
+      #mesa {
+        width: 800px;
+        height: 500px;
+        /* Feltro verde com textura */
+        background: radial-gradient(#27ae60, #145a32);
+        position: relative;
+        border-radius: 200px;
+        /* Borda de madeira */
+        border: 20px solid #5d4037;
+        box-shadow: 
+            inset 0 0 50px rgba(0,0,0,0.8),
+            0 20px 50px rgba(0,0,0,0.6),
+            0 0 0 5px #3e2723; /* Detalhe borda externa */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      #vira-container {
+        position: absolute;
+        top: 40px;
+        right: 100px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        z-index: 10;
+      }
+
+      #vira-slot {
+        position: relative;
+        width: 50px;
+        height: 75px;
+      }
+
+      .baralho-decor {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 100%;
+        height: 100%;
+        background: #2c3e50;
+        border-radius: 5px;
+        border: 1px solid #111;
+        z-index: 1;
+      }
+
+      .jogador {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 20;
+        width: 80px;
+      }
+      .cartas {
+        display: flex;
+        gap: 5px;
+        justify-content: center;
+      }
+
+      .norte {
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .sul {
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .leste {
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+      .oeste {
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      .nome-j {
+        font-family: 'Rye', serif;
+        font-size: 12px;
+        color: #3e2723 !important;
+        background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMDAnIGhlaWdodD0nMTAwJz48cmVjdCB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyBmaWxsPSIjZjdjNzc0Ii8+PC9zdmc+'); /* Efeito madeira na cor */
+        background: linear-gradient(to bottom, #deb887, #d2691e); 
+        padding: 4px 12px;
+        border: 2px solid #5d4037;
+        border-radius: 4px;
+        margin: 4px 0;
+        text-align: center;
+        white-space: nowrap;
+        text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+      }
+
+      .avatar-mesa {
+        order: 1;
+      }
+      .nome-j {
+        order: 2;
+      }
+      .cartas {
+        order: 3;
+      }
+
+      .sul .cartas {
+        order: 1;
+        margin-bottom: 5px;
+      }
+      .sul .avatar-mesa {
+        order: 2;
+      }
+      .sul .nome-j {
+        order: 3;
+      }
+
+      .oeste .cartas,
+      .leste .cartas {
+        position: absolute;
+        top: 50%;
+        display: flex;
+        gap: 5px;
+        justify-content: center;
+      }
+
+      .oeste .cartas {
+        left: 140%; /* Afasta do avatar */
+        transform: translateY(-50%) rotate(90deg);
+        transform-origin: center center;
+      }
+      .leste .cartas {
+        right: 140%; /* Afasta do avatar */
+        transform: translateY(-50%) rotate(-90deg);
+        transform-origin: center center;
+      }
+
+      .score-tag {
+        position: absolute;
+        background: #fff;
+        color: #000;
+        font-size: 10px;
+        font-weight: 900;
+        padding: 2px 6px;
+        border-radius: 10px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        display: none;
+        white-space: pre;
+        text-align: center;
+        line-height: 1.1;
+        z-index: 50;
+      }
+
+      .balao-fala {
+        position: absolute;
+        background: #fff;
+        color: #000;
+        padding: 10px 15px;
+        border-radius: 20px;
+        border-bottom-left-radius: 0;
+        font-weight: bold;
+        font-size: 14px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        z-index: 200;
+        animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        max-width: 150px;
+        text-align: center;
+        pointer-events: none;
+      }
+      @keyframes popIn {
+        from {
+          transform: scale(0);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+      /* Posicionamento relativo ao avatar */
+      .sul .score-tag {
+        right: 15px;
+        top: 85px;
+      }
+      .norte .score-tag {
+        right: 0;
+        top: 10px;
+      }
+      .oeste .score-tag {
+        right: 0;
+        top: 0;
+      }
+      .leste .score-tag {
+        left: 0;
+        top: 0;
+      }
+
+      .carta {
+        width: 50px;
+        height: 75px;
+        background: white;
+        color: black;
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 16px;
+        border: 1px solid #999;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 2;
+      }
+
+      .manilha {
+        border: 3px solid var(--gold) !important;
+        box-shadow: 0 0 15px var(--gold);
+      }
+      .manilha::after {
+        content: "⭐";
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        font-size: 12px;
+      }
+
+      .sul .carta:hover {
+        transform: translateY(-10px);
+        cursor: pointer;
+        border-color: var(--accent);
+      }
+      .verso {
+        background: #8b0000; /* Vermelho escuro clássico */
+        background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.2) 0, rgba(0,0,0,0.2) 5px, transparent 5px, transparent 10px);
+        border: 2px solid #ecf0f1;
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+      }
+      .verso::after {
+          content: '♠'; font-size: 20px; color: rgba(255,255,255,0.2);
+          position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      }
+
+      #centro-mesa {
+        width: 250px;
+        height: 150px;
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+      }
+
+      #aviso-rodada {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 50;
+        font-weight: 900;
+        font-size: 24px;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        pointer-events: none;
+        display: none;
+        white-space: nowrap;
+      }
+
+      #modal-decisao {
+        position: absolute;
+        z-index: 100;
+        background: #3e2723;
+        padding: 20px;
+        border-radius: 10px;
+        border: 4px solid #8d6e63;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      }
+
+      .controles-acoes {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      #btn-truco,
+      #btn-correr {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 5px;
+        color: white;
+        font-family: 'Rye', serif;
+        font-size: 16px;
+        cursor: pointer;
+        display: none;
+        box-shadow: 0 4px 0 rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.3);
+        transition: 0.2s;
+        text-transform: uppercase;
+      }
+
+      #btn-truco {
+        background: #c0392b; /* Vermelho mais escuro/sangue */
+        border: 1px solid #922b21;
+      }
+      #btn-truco:active { transform: translateY(4px); box-shadow: none; }
+
+      #btn-correr {
+        background: #5d4037;
+        font-size: 12px;
+        border: 1px solid #3e2723;
+      }
+      #btn-correr:hover {
+        background: #4e342e;
+      }
+      #btn-correr:active { transform: translateY(4px); box-shadow: none; }
+
+      #btn-coberta {
+        position: absolute;
+        top: 85px;
+        left: 110%;
+        transform: none;
+        padding: 8px 15px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
+        background: rgba(0, 0, 0, 0.5);
+        color: #aaa;
+        cursor: pointer;
+        font-size: 10px;
+        transition: all 0.2s;
+        display: none;
+        z-index: 20;
+        white-space: nowrap;
+      }
+      #btn-coberta.ativo {
+        background: var(--accent);
+        color: black;
+        border-color: var(--accent);
+        box-shadow: 0 0 10px var(--accent);
+        font-weight: bold;
+      }
+
+      /* Menu Inicial Rústico */
+      #menu-inicial {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(44, 24, 16, 0.95); /* Madeira escura transparente */
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnPjxmaWx0ZXIgaWQ9J24nPjxmZVR1cmJ1bGVuY2UgdHlwZT0nZnJhY3RhbE5vaXNlJyBiYXNlRnJlcXVlbmN5PScwLjUnIHN0aXRjaFRpbGVzPSdzdGl0Y2gnLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJyBmaWxsPSd0cmFuc3BhcmVudCcvPjwvc3ZnPg=='); /* Noise texture */
+      }
+      
+      .brand-title {
+         font-family: 'Rye', serif;
+         font-size: 80px;
+         margin-bottom: 50px;
+         color: #ffb74d;
+         text-shadow: 
+            3px 3px 0px #3e2723, 
+            6px 6px 0px rgba(0,0,0,0.5);
+         letter-spacing: 2px;
+         text-transform: uppercase;
+         position: relative; z-index: 2;
+         display: flex; align-items: center; gap: 20px;
+      }
+
+      .btn-menu {
+        padding: 20px 40px;
+        margin: 15px;
+        font-size: 24px;
+        font-family: 'Rye', serif;
+        font-weight: normal;
+        border: 2px solid #3e2723;
+        border-radius: 8px;
+        cursor: pointer;
+        width: 350px;
+        transition: 0.2s;
+        color: #fff;
+        text-shadow: 2px 2px 0px #000;
+        position: relative;
+        overflow: hidden;
+        z-index: 2;
+        background: linear-gradient(180deg, #8d6e63 0%, #5d4037 100%);
+        box-shadow: 
+            inset 0 1px 0 rgba(255,255,255,0.3),
+            0 4px 0 #3e2723,
+            0 5px 10px rgba(0,0,0,0.5);
+      } 
+
+      
+      .btn-menu:active {
+          transform: translateY(4px);
+          box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+      }
+      
+      .btn-vs-pc { box-shadow: 0 4px 0 #3e2723; } /* Mantem padrao madeira */
+
+      .btn-menu:hover {
+         filter: brightness(1.2);
+         transform: translateY(-1px);
+         box-shadow: 0 5px 0 #3e2723, 0 6px 15px rgba(0,0,0,0.4);
+      }
+
+      #sala-info {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 50;
+        background: rgba(62, 39, 35, 0.8);
+        padding: 8px 15px;
+        border-radius: 5px;
+        font-size: 14px;
+        font-family: 'Roboto Slab', serif;
+        border: 1px solid #8d6e63;
+        color: #ffe0b2;
+        display: none;
+      }
+
+      #lista-salas {
+        margin-top: 20px;
+        width: 300px;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        padding: 10px;
+        max-height: 200px;
+        overflow-y: auto;
+        display: none;
+      }
+      .sala-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.1);
+        padding: 8px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+      }
+      .sala-btn {
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        color: white;
+      }
+      .btn-entrar {
+        background: #27ae60;
+      }
+      .btn-ver {
+        background: #2980b9;
+      }
+
+      #modal-nome {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 2000;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      #input-nome {
+        padding: 10px;
+        font-size: 18px;
+        border-radius: 5px;
+        border: none;
+        text-align: center;
+        margin-bottom: 10px;
+        width: 250px;
+      }
+
+      /* Estilos Avatares */
+      .avatar-option {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+        border: 3px solid transparent;
+        transition: 0.2s;
+        background: #333;
+        overflow: hidden;
+      }
+      .avatar-option:hover {
+        transform: scale(1.1);
+      }
+      .avatar-option.selected {
+        border-color: var(--gold);
+        box-shadow: 0 0 10px var(--gold);
+      }
+      .avatar-option svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .cadeira-lobby {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        height: 80px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        cursor: pointer;
+        transition: 0.2s;
+        border: 2px solid transparent;
+      }
+      .cadeira-lobby:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: var(--accent);
+      }
+      .cadeira-lobby span {
+        position: absolute;
+        bottom: -25px;
+        font-size: 12px;
+        font-weight: bold;
+        width: 120px;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 2px 5px;
+        border-radius: 4px;
+        pointer-events: none;
+      }
+      .cadeira-lobby.ocupado {
+        cursor: default;
+        border-color: #555;
+        background: rgba(0, 0, 0, 0.5);
+      }
+      .cadeira-lobby .avatar-preview {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        overflow: hidden;
+        display: none;
+      }
+      .cadeira-lobby.ocupado .avatar-preview {
+        display: block;
+      }
+
+      .avatar-mesa {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        background: #222;
+        overflow: hidden;
+        margin-bottom: 5px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        position: relative;
+        z-index: 10;
+      }
+      .avatar-mesa svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      /* Ajustar labels de jogadores para acomodar avatar */
+      /* Ajustar labels de jogadores para acomodar avatar */
+      .jogador .nome-j {
+        margin-top: -10px;
+        z-index: 11;
+        font-size: 12px;
+      }
+
+      /* Indicador de Vez */
+      .vez-de-jogar .avatar-mesa {
+        border-color: var(--gold) !important;
+        box-shadow:
+          0 0 15px var(--gold),
+          0 0 30px rgba(255, 215, 0, 0.5) !important;
+        transform: scale(1.1);
+        transition: all 0.3s ease-in-out;
+        z-index: 100;
+      }
+      .vez-de-jogar .nome-j {
+        color: var(--gold) !important;
+        text-shadow: 0 0 5px var(--gold);
+        font-weight: 900;
+      }
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+    <div id="painel-controle">
+      <div style="color: var(--cor-nos)">
+        NÓS: <span id="p-nos" class="score">0</span>
+      </div>
+      <div style="color: var(--cor-eles)">
+        ELES: <span id="p-eles" class="score">0</span>
+      </div>
+
+      <div id="contador-rodadas">
+        <div id="queda-0" class="queda-dot"></div>
+        <div id="queda-1" class="queda-dot"></div>
+        <div id="queda-2" class="queda-dot"></div>
+      </div>
+
+      <hr style="opacity: 0.2" />
+      <div style="font-size: 10px; margin-bottom: 5px; color: #aaa">
+        PARTIDAS GANHAS
+      </div>
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          font-size: 14px;
+          font-weight: bold;
+          margin-bottom: 10px;
+        "
+      >
+        <span style="color: var(--cor-nos)"
+          >NÓS: <span id="win-nos">0</span></span
+        >
+        <span style="color: var(--cor-eles)"
+          >ELES: <span id="win-eles">0</span></span
+        >
+      </div>
+
+      <hr style="opacity: 0.2" />
+      <div style="font-size: 12px">
+        VALE: <span id="valor-atual" style="color: var(--accent)">1</span>
+      </div>
+    </div>
+
+    <div id="mesa">
+      <button
+        id="btn-start"
+        onclick="reqIniciarPartida()"
+        style="
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          padding: 15px 40px;
+          cursor: pointer;
+          font-weight: bold;
+          background: var(--cor-nos);
+          border: none;
+          border-radius: 10px;
+          color: white;
+          display: none;
+          z-index: 150;
+          box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        "
+      >
+        COMEÇAR JOGO
+      </button>
+
+      <div id="modal-decisao">
+        <h3 id="titulo-modal">TRUCO!</h3>
+        <div style="display: flex; gap: 10px">
+          <button
+            onclick="decisaoHumana(true)"
+            style="
+              background: var(--cor-nos);
+              border: none;
+              padding: 8px 15px;
+              border-radius: 5px;
+              cursor: pointer;
+              color: white;
+            "
+          >
+            ACEITAR
+          </button>
+          <button
+            onclick="decisaoHumana(false)"
+            style="
+              background: var(--danger);
+              border: none;
+              padding: 8px 15px;
+              border-radius: 5px;
+              color: white;
+              cursor: pointer;
+            "
+          >
+            CORRER
+          </button>
+        </div>
+      </div>
+
+      <div id="vira-container">
+        <span
+          style="
+            font-size: 10px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.6);
+          "
+          >VIRA</span
+        >
+        <div id="vira-slot"><div class="baralho-decor"></div></div>
+      </div>
+
+      <div class="jogador norte" id="j2">
+        <div class="cartas"></div>
+        <span class="nome-j" style="color: var(--cor-nos)">PARCEIRO</span>
+        <span class="score-tag">0</span>
+      </div>
+      <div class="jogador oeste" id="j1">
+        <div class="cartas"></div>
+        <span class="nome-j" style="color: var(--cor-eles)">OPONENTE 1</span>
+        <span class="score-tag">0</span>
+      </div>
+      <div class="jogador leste" id="j3">
+        <div class="cartas"></div>
+        <span class="nome-j" style="color: var(--cor-eles)">OPONENTE 2</span>
+        <span class="score-tag">0</span>
+      </div>
+      <div class="jogador sul" id="j0">
+        <span class="nome-j" style="color: var(--cor-nos)">VOCÊ</span>
+        <span class="score-tag">0</span>
+        <div class="cartas"></div>
+        <button id="btn-coberta" onclick="toggleModoCoberta()">
+          JOGAR COBERTA
+        </button>
+      </div>
+
+      <div id="centro-mesa">
+        <div id="aviso-rodada"></div>
+      </div>
+    </div>
+
+    <div class="controles-acoes">
+      <button id="btn-correr" onclick="fugirMao()">CORRER (DESISTIR)</button>
+      <button id="btn-truco" onclick="pedirTruco()">TRUCO!</button>
+    </div>
+
+    <div id="sala-info">Modo: Offline</div>
+    <button
+      id="btn-sair"
+      onclick="location.reload()"
+      style="
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 50;
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 5px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        display: none;
+      "
+    >
+      SAIR
+    </button>
+
+    <div id="menu-inicial">
+      <h1
+        style="
+          font-size: 60px;
+          margin-bottom: 40px;
+          color: var(--gold);
+          text-shadow: 0 0 20px var(--gold);
+        "
+      >
+        TRUCO PRO
+      </h1>
+      <button class="btn-menu btn-vs-pc" onclick="iniciarOffline()">
+        JOGAR VS COMPUTADOR
+      </button>
+      <button class="btn-menu btn-online" onclick="prepararCriarSala()">
+        CRIAR SALA ONLINE
+      </button>
+
+      <div id="lista-salas"></div>
+
+      <div id="status-conexao" style="margin-top: 20px; color: #aaa"></div>
+    </div>
+
+    <div id="modal-nome">
+      <h2 style="color: var(--gold)">IDENTIDADE</h2>
+      <input
+        type="text"
+        id="input-nome"
+        placeholder="Seu Nickname..."
+        maxlength="10"
+      />
+
+      <div style="margin: 10px 0; text-align: center">
+        <p style="font-size: 12px; color: #aaa; margin-bottom: 5px">
+          ESCOLHA SEU AVATAR
+        </p>
+        <div
+          id="grid-avatares"
+          style="
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 300px;
+          "
+        >
+          <!-- Avatares injetados via JS -->
+        </div>
+      </div>
+
+      <button
+        class="btn-menu btn-online"
+        style="width: 200px"
+        onclick="confirmarNome()"
+      >
+        ENTRAR
+      </button>
+      <button
+        onclick="cancelarNome()"
+        style="
+          background: transparent;
+          border: none;
+          color: #aaa;
+          cursor: pointer;
+          margin-top: 10px;
+        "
+      >
+        Cancelar
+      </button>
+    </div>
+
+    <!-- UI: Lobby da Sala (Escolha de Lugar) -->
+    <div
+      id="lobby-sala"
+      style="
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 900;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <h2 id="lobby-titulo" style="color: var(--gold); font-size: 30px">
+        SALA X
+      </h2>
+      <p style="color: #ccc; font-size: 14px; margin-bottom: 30px">
+        Escolha um lugar na mesa
+      </p>
+
+      <div
+        style="
+          position: relative;
+          width: 400px;
+          height: 400px;
+          border: 2px dashed #333;
+          border-radius: 50%;
+        "
+      >
+        <!-- Cadeiras -->
+        <div
+          class="cadeira-lobby"
+          id="seat-2"
+          onclick="tentarSentar(2)"
+          style="top: -60px; left: 50%; transform: translateX(-50%)"
+        >
+          <div class="avatar-preview"></div>
+          <span>FRENTE (Parceiro)</span>
+        </div>
+        <div
+          class="cadeira-lobby"
+          id="seat-1"
+          onclick="tentarSentar(1)"
+          style="top: 50%; left: -60px; transform: translateY(-50%)"
+        >
+          <div class="avatar-preview"></div>
+          <span>ESQUERDA (Adv)</span>
+        </div>
+        <div
+          class="cadeira-lobby"
+          id="seat-3"
+          onclick="tentarSentar(3)"
+          style="top: 50%; right: -60px; transform: translateY(-50%)"
+        >
+          <div class="avatar-preview"></div>
+          <span>DIREITA (Adv)</span>
+        </div>
+        <div
+          class="cadeira-lobby"
+          id="seat-0"
+          onclick="tentarSentar(0)"
+          style="bottom: -60px; left: 50%; transform: translateX(-50%)"
+        >
+          <div class="avatar-preview"></div>
+          <span>VOCÊ (Sul)</span>
+        </div>
+
+        <div
+          style="
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #555;
+            font-weight: bold;
+          "
+        >
+          MESA
+        </div>
+      </div>
+
+      <div style="margin-top: 50px; display: flex; gap: 20px">
+        <button
+          class="btn-menu"
+          style="background: #555; width: auto; font-size: 16px"
+          onclick="sairDaSala()"
+        >
+          SAIR DA SALA
+        </button>
+        <button
+          id="btn-iniciar-lobby"
+          class="btn-menu disabled"
+          style="
+            background: var(--cor-nos);
+            width: auto;
+            font-size: 16px;
+            opacity: 0.5;
+            cursor: not-allowed;
+          "
+          onclick="requestStartGame()"
+          disabled
+        >
+          AGUARDANDO...
+        </button>
+      </div>
+    </div>
+
+    <!-- Container para balões de fala -->
+    <div
+      id="camada-baloes"
+      style="
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 150;
+      "
+    ></div>
+
+    <script>
+      // --- CONFIGURAÇÃO DE VERCEL / DEPLOY ---
+      // Se você hospedar o Frontend no Vercel e o Backend em outro lugar (Render/Railway),
+      // substitua a string abaixo pela URL do seu Backend (ex: 'https://meu-truco-api.onrender.com').
+      // Se hospedar tudo junto (ex: Render Monolito ou Local), mantenha null ou '/'.
+      const BACKEND_URL = null;
+      let socket = null;
+
+      // --- FIM CONFIGURAÇÃO ---
+      const naipes = ["♦", "♠", "♥", "♣"];
+      const ordemTruco = ["4", "5", "6", "7", "Q", "J", "K", "A", "2", "3"];
+
+      // --- AVATARES SVG (Design Minimalista com Cores) ---
+      // --- AVATARES SVG (Animais de Faroeste) ---
+      const AVATARS = [
+        // 0: Cavalo
+        `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#a1887f"/><path d="M30 30 L30 15 L40 25 M70 30 L70 15 L60 25" stroke="#5d4037" stroke-width="5" fill="none"/><rect x="35" y="30" width="30" height="40" fill="#8d6e63"/><path d="M35 30 Q50 80 65 30" fill="#3e2723"/><circle cx="40" cy="45" r="4" fill="#000"/><circle cx="60" cy="45" r="4" fill="#000"/><path d="M40 60 Q50 70 60 60" stroke="#000" stroke-width="2" fill="none"/></svg>`,
+        // 1: Búfalo
+        `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#5d4037"/><path d="M20 40 Q10 20 40 30 M80 40 Q90 20 60 30" stroke="#f5f5f5" stroke-width="6" fill="none"/><circle cx="35" cy="55" r="4" fill="#000"/><circle cx="65" cy="55" r="4" fill="#000"/><rect x="40" y="65" width="20" height="10" rx="5" fill="#3e2723"/><circle cx="45" cy="70" r="2" fill="#000"/><circle cx="55" cy="70" r="2" fill="#000"/></svg>`,
+        // 2: Cobra
+        `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#2e7d32"/><path d="M30 60 Q50 90 70 60 Q90 30 50 30 Q30 30 30 50" stroke="#1b5e20" stroke-width="8" fill="none"/><circle cx="40" cy="40" r="3" fill="#ffeb3b"/><path d="M25 50 L15 55 L25 60" fill="#c0392b"/></svg>`,
+        // 3: Águia
+        `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#81d4fa"/><path d="M20 60 Q50 20 80 60 L50 90 Z" fill="#5d4037"/><path d="M50 20 L20 60 L80 60 Z" fill="#fff"/><circle cx="45" cy="50" r="4" fill="#000"/><path d="M55 50 L65 55 L55 60 Z" fill="#f1c40f"/></svg>`,
+        // 4: Escorpião
+        `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#e67e22"/><path d="M30 40 Q50 20 70 40" stroke="#3e2723" stroke-width="4" fill="none"/><path d="M30 40 L20 30 M70 40 L80 30" stroke="#3e2723" stroke-width="4"/><circle cx="50" cy="50" r="15" fill="#3e2723"/><path d="M50 65 Q60 85 80 50" stroke="#3e2723" stroke-width="4" fill="none"/><polygon points="80,50 85,45 85,55" fill="#c0392b"/></svg>`,
+        // 5: Tatu
+        `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#e0e0e0"/><path d="M20 50 Q50 10 80 50" fill="#8d6e63"/><path d="M25 50 L25 70 M75 50 L75 70" stroke="#8d6e63" stroke-width="5"/><circle cx="30" cy="55" r="2" fill="#000"/><path d="M20 50 Q50 30 80 50" stroke="#5d4037" stroke-width="2" fill="none"/></svg>`,
+        // 6: Coiote
+        `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#d7ccc8"/><path d="M20 20 L40 50 L50 40 L60 50 L80 20" fill="#8d6e63"/><circle cx="40" cy="60" r="4" fill="#000"/><circle cx="60" cy="60" r="4" fill="#000"/><path d="M50 70 L45 80 L55 80 Z" fill="#3e2723"/></svg>`,
+        // 7: Abutre
+        `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#b0bec5"/><path d="M30 40 Q50 20 70 40" fill="#212121"/><rect x="45" y="40" width="10" height="30" fill="#e91e63"/><circle cx="50" cy="35" r="12" fill="#e91e63"/><circle cx="46" cy="32" r="2" fill="#fff"/><circle cx="54" cy="32" r="2" fill="#fff"/><path d="M48 40 L52 40 L50 45 Z" fill="#f1c40f"/></svg>`
+      ];
+
+      // Novas Globais
+      const frasesTruco = [
+        "Truco, marreco!",
+        "Truco, pato!",
+        "Pede seis ou corre!",
+        "Caiu na lagoa é pato!",
+        "Segura esse zap!",
+        "Bate na mesa e grita!",
+        "Essa nem o juiz roubando!",
+        "Tremeu a perna?",
+        "Vai correr ou vai encarar?",
+      ];
+      
+      const frasesSeis = [
+        "MEIO PAU! (Seis)",
+        "Seis neles!",
+        "Pede nove se for homem!",
+        "Vem pro seis!",
+        "A chapa esquentou, é SEIS!",
+        "Agora a porca torce o rabo: SEIS!",
+        "Seis tentos pra nós!",
+      ];
+      
+      const frasesNove = [
+        "NOVE! Quero ver pagar!",
+        "Nove, ladrão!",
+        "Entroncou o jogo: NOVE!",
+        "Nove neles, parceiro!",
+        "Não corre não, é NOVE!",
+        "Nove pra acabar com a festa!",
+      ];
+
+      const frasesDoze = [
+        "DOZE! O jogo acaba aqui!",
+        "QUEDA! (Doze)",
+        "Doze pra fechar o caixão!",
+        "Desce o doze!",
+        "CAIU A CASA! É DOZE!",
+        "Agora é tudo ou nada: DOZE!",
+      ];
+      let statsJogadores = [
+        { g: 0, p: 0 },
+        { g: 0, p: 0 },
+        { g: 0, p: 0 },
+        { g: 0, p: 0 },
+      ];
+
+      let maos = [[], [], [], []],
+        jogadasMesa = [],
+        turnoAtual = 0,
+        manilhaValor = "";
+      let placarGeral = { nos: 0, eles: 0 },
+        quedasNaMao = { nos: 0, eles: 0, total: 0 };
+      let valorMao = 1,
+        quemPodeAumentar = "todos";
+      let modoCartaCoberta = false;
+      let jogadorQueComeca = 0;
+
+      // Multiplayer States
+      let isOnline = false;
+      // let socket = null; // REMOVIDO DUPLICIDADE
+      let mySlot = -1; // -1 = Lobby/Spectator
+      let roomId = null;
+      let isRoomCreator = false; // "Host" logico (Slot 0 geralmente)
+      let myName = "";
+      let selectedAvatarId = 0; // Default
+      let pendingRoomAction = null;
+
+      // Inicializar
+      window.onload = () => {
+        renderGridAvatares(); // Renderizar opções no modal
+
+        if (typeof io !== "undefined") {
+          const socketOption = BACKEND_URL ? BACKEND_URL : "/";
+          socket = io(socketOption);
+          socket.on("connect", () => {
+            document.getElementById("status-conexao").innerText =
+              "Conectado ao Lobby";
+          });
+          socket.on("room_list_update", (list) => {
+            const div = document.getElementById("lista-salas");
+            div.style.display = "block";
+            div.innerHTML =
+              '<h3 style="margin:0 0 10px 0; font-size:14px; text-align:center;">SALAS DISPONÍVEIS</h3>';
+            if (list.length === 0) {
+              div.innerHTML +=
+                '<div style="text-align:center; font-size:12px; color:#aaa;">Nenhuma sala criada.</div>';
+              return;
+            }
+            list.forEach((sala) => {
+              const item = document.createElement("div");
+              item.className = "sala-item";
+              // Mostra nome amigavel se existir
+              const nomeSala = sala.name || `Sala ${sala.id}`;
+              item.innerHTML = `
+                             <span style="font-size:12px; font-weight:bold;">${nomeSala} (${sala.count}/4)</span>
+                             <button class="sala-btn btn-entrar" onclick="prepararEntrarSala('${sala.id}')">ENTRAR</button>
+                         `;
+              div.appendChild(item);
+            });
+          });
+          setupSocketListeners();
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const roomParam = urlParams.get("room");
+        if (roomParam) {
+          prepararEntrarSala(roomParam);
+        }
+      };
+
+      function renderGridAvatares() {
+        const grid = document.getElementById("grid-avatares");
+        grid.innerHTML = "";
+        AVATARS.forEach((svg, idx) => {
+          const el = document.createElement("div");
+          el.className = "avatar-option";
+          if (idx === selectedAvatarId) el.classList.add("selected");
+          el.innerHTML = svg;
+          el.onclick = () => {
+            selectedAvatarId = idx;
+            document
+              .querySelectorAll(".avatar-option")
+              .forEach((d) => d.classList.remove("selected"));
+            el.classList.add("selected");
+          };
+          grid.appendChild(el);
+        });
+      }
+
+      // --- Fluxo de Nome ---
+      function prepararCriarSala() {
+        pendingRoomAction = { type: "create" };
+        abrirModalNome();
+      }
+
+      function prepararEntrarSala(id) {
+        pendingRoomAction = { type: "join", roomId: id };
+        abrirModalNome();
+      }
+
+      function abrirModalNome() {
+        document.getElementById("modal-nome").style.display = "flex";
+        document.getElementById("input-nome").focus();
+      }
+
+      function cancelarNome() {
+        document.getElementById("modal-nome").style.display = "none";
+        pendingRoomAction = null;
+      }
+
+      function confirmarNome() {
+        const nome = document.getElementById("input-nome").value.trim();
+        if (!nome) {
+          alert("Digite um nome!");
+          return;
+        }
+        myName = nome;
+        document.getElementById("modal-nome").style.display = "none";
+
+        if (pendingRoomAction.type === "create") {
+          criarSalaOnline();
+        } else if (pendingRoomAction.type === "join") {
+          entrarSalaOnline(pendingRoomAction.roomId);
+        }
+      }
+
+      function criarSalaOnline() {
+        // Emite criacao e aguarda room_created para entrar
+        socket.emit("create_room", { playerName: myName });
+        socket.once("room_created", (data) => {
+          isRoomCreator = true; // Sou o Host
+          entrarSalaOnline(data.roomId);
+        });
+      }
+
+      function entrarSalaOnline(id) {
+        isOnline = true;
+        roomId = id;
+        document.getElementById("menu-inicial").style.display = "none";
+        document.getElementById("btn-sair").style.display = "block"; // Mostrar Botão Sair
+
+        // Em vez de ir direto pro jogo, envia stats e espera room_state (Lobby)
+        socket.emit("join_room", {
+          roomId,
+          playerName: myName,
+          avatarId: selectedAvatarId,
+        });
+      }
+
+      // --- Ações do Lobby ---
+      function tentarSentar(slot) {
+        // Se eu sou o criador (Host), só posso sentar no 0 e não sair dele
+        if (isRoomCreator && slot !== 0) {
+          alert("O Host deve permanecer na posição Sul/Você.");
+          return;
+        }
+        // Se ja estou no 0 e sou criador, nao faço nada (ja estou la)
+        socket.emit("sit_down", { roomId, slot });
+      }
+      function sairDaSala() {
+        location.reload(); // Maneira mais limpa de resetar tudo
+      }
+      function requestStartGame() {
+        socket.emit("request_start_game", { roomId });
+      }
+
+      // --- MAPA DE JOGADORES NO LOBBY/MESA ---
+      let currentRoomState = null;
+
+        function setupSocketListeners() {
+            // Listener de Concessão (Desistência)
+            socket.on('player_concede', (data) => {
+                const slotFugiu = data.slot;
+                const teamFugiu = slotFugiu % 2;
+                // Quem ganhou? O outro time.
+                const winnerTeamIdx = (teamFugiu === 0) ? 1 : 0; 
+                const winnerStr = (winnerTeamIdx === 0) ? 'nos' : 'eles'; // server perspective
+                
+                // Se sou Host, finalizo a mão oficialmente
+                if (isRoomCreator || mySlot === 0) {
+                     socket.emit('end_game_hand', { winner: winnerStr, points: valorMao });
+                }
+            });
+
+            // -- SYNC LOGIC PARA ENTRAR EM JOGO JÁ INICIADO --
+            
+            // HOST: Recebe pedido para enviar dados a um novo jogador
+        socket.on("host_sync_request", (request) => {
+          // request: { targetSocketId, targetSlot }
+          console.log(
+            "Host recebeu pedido de sync para:",
+            request.targetSocketId,
+          );
+
+          // Preparar Payload com TODO o estado atual
+          const gameData = {
+            maos: maos,
+            vira: maos.length > 0 ? null : null, // Vira nao esta salvo global em objeto facil?
+            // Precisamos capturar o vira visualmente ou salvar em variavel global 'viraCarta'
+            // No acaoDistribuir eu usei 'vira' localmente. Preciso salvar global.
+            // A variavel 'vira' nao existe globalmente, so 'manilhaValor'.
+            // Precisamos do vira para renderizar? Sim.
+            // Temporariamente, vou recuperar o vira do DOM se nao tiver global.
+            // Hack: Ler do #vira-slot
+
+            manilhaValor: manilhaValor,
+            jogadorQueComeca: jogadorQueComeca,
+            turnoAtual: turnoAtual,
+            valorMao: valorMao,
+            quemPodeAumentar: quemPodeAumentar,
+            jogadasMesa: jogadasMesa,
+            placarGeral: placarGeral,
+            statsJogadores: statsJogadores,
+
+            // Helper para reconstruir o vira do lado de la, ja que nao tenho o obj carta facil se nao salvei
+            // O ideal seria ter salvo. Vou mandar manilhaValor e o cliente la que se vire? Nao, precisa mostrar a carta.
+            // Vou pegar o conteudo HTML do vira e mandar como string? Nao.
+            // Vou assumir que o Host tem 'vira' salvo? Nao tem.
+            // VOU ADICIONAR VARIAVEL GLOBAL viraCarta em acaoDistribuir depois.
+            // Por enquanto, vou tentar reconstruir ou mandar null e la ele se vira (erro visual).
+            // MELHOR: Mandar manilhaValor. O vira é (manilhaValor - 1 na ordem).
+            // Pode haver colisão de naipe? O naipe do vira importa? Visualmente sim.
+            // Vou extrair do DOM.
+          };
+
+          // Tentar extrair Vira do DOM do Host
+          const viraEl = document.querySelector(
+            "#vira-slot .carta span:nth-child(1)",
+          );
+          const viraNaipeEl = document.querySelector(
+            "#vira-slot .carta span:nth-child(2)",
+          );
+          if (viraEl && viraNaipeEl) {
+            gameData.viraCartaObj = {
+              v: viraEl.innerText,
+              n: viraNaipeEl.innerText,
+              cor: viraNaipeEl.style.color,
+            };
+          }
+
+          socket.emit("host_sync_data", {
+            targetSocketId: request.targetSocketId,
+            gameData: gameData,
+          });
+        });
+
+        // CLIENT NOVO: Recebe o pacote completo
+        socket.on("full_sync", (gameData) => {
+          console.log("Recebi full_sync do Host!", gameData);
+
+          // Aplicar Estado
+          maos = gameData.maos;
+          manilhaValor = gameData.manilhaValor;
+          jogadorQueComeca = gameData.jogadorQueComeca;
+          turnoAtual = gameData.turnoAtual;
+          valorMao = gameData.valorMao;
+          quemPodeAumentar = gameData.quemPodeAumentar;
+          jogadasMesa = gameData.jogadasMesa;
+          placarGeral = gameData.placarGeral;
+          statsJogadores = gameData.statsJogadores;
+
+          // Configurar Ambiente
+          isOnline = true;
+          document.getElementById("lobby-sala").style.display = "none";
+          document.getElementById("sala-info").style.display = "block";
+          document.getElementById("sala-info").innerText = `Sala: ${roomId}`;
+
+          // UI: Vira
+          const viraSlot = document.getElementById("vira-slot");
+          viraSlot.innerHTML = "";
+          if (gameData.viraCartaObj) {
+            // Reconstruir objeto carta simples
+            const c = {
+              v: gameData.viraCartaObj.v,
+              n: gameData.viraCartaObj.n,
+              cor:
+                gameData.viraCartaObj.n === "♦" ||
+                gameData.viraCartaObj.n === "♥"
+                  ? "#e74c3c"
+                  : "#333",
+            };
+            viraSlot.appendChild(criarCardUI(c, true));
+          }
+
+          // UI: Mesa (Jogadas atuais)
+          const centro = document.getElementById("centro-mesa");
+          centro.innerHTML = '<div id="aviso-rodada"></div>';
+          jogadasMesa.forEach((jogada) => {
+            const div = criarCardUI(jogada.c, !jogada.isCoberta);
+            div.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
+            centro.appendChild(div);
+          });
+
+          // UI: Mãos
+          for (let i = 0; i < 4; i++) renderMao(i);
+
+          // UI: Placares
+          atualizarPlacaresVisuais();
+          document.getElementById("p-nos").innerText = placarGeral.nos;
+          document.getElementById("p-eles").innerText = placarGeral.eles;
+
+          // Corrigir orientacao do placar se eu for Time 1 (copiado de finalizarMao)
+          if (mySlot === 1 || mySlot === 3) {
+            document.getElementById("p-nos").innerText = placarGeral.eles;
+            document.getElementById("p-eles").innerText = placarGeral.nos;
+          }
+
+          document.getElementById("valor-atual").innerText = valorMao;
+
+          // Atualizar Botões (proximoPasso cuida disso se for minha vez)
+          proximoPasso();
+        });
+
+        socket.on("room_state", (state) => {
+          // Entrou na sala (modo Lobby)
+          currentRoomState = state;
+          roomId = state.roomId;
+          document.getElementById("lobby-sala").style.display = "flex";
+          document.getElementById("lobby-titulo").innerText = state.roomName;
+
+          //renderLobbySeats(state.players); // Removido daqui para chamar apos logica de auto-seat
+
+          // Se sou o criador e nao estou sentado, sentar no 0
+          // Precisamos verificar se o slot 0 esta vazio no state.players
+          // Mas como acabei de criar, deve estar.
+          if (isRoomCreator && mySlot === -1) {
+            // Tenta sentar no 0 automaticamente
+            socket.emit("sit_down", { roomId, slot: 0 });
+          }
+
+          renderLobbySeats(state.players);
+        });
+
+        socket.on("update_players", (players) => {
+          // Atualização de quem esta sentado
+          renderLobbySeats(players);
+          // Se o jogo ja começou, renderiza mesa também?
+          // Sim, update_players é usado para nomes
+          window.currentPlayers = players;
+          atualizarNomesVisuais();
+        });
+
+        socket.on("sit_error", (msg) => alert(msg));
+
+        socket.on("room_closed", (msg) => {
+          alert(msg);
+          window.location.reload();
+        });
+
+        socket.on("remote_game_start", () => {
+          document.getElementById("lobby-sala").style.display = "none";
+          document.getElementById("sala-info").style.display = "block";
+          document.getElementById("sala-info").innerText = `Sala: ${roomId}`;
+
+          // Prepara ambiente visual (limpa)
+          iniciarPartida(true);
+
+          if (isRoomCreator || mySlot === 0) {
+            // Host vê o botão "COMEÇA JOGO" (distribuir)
+            const btnStart = document.getElementById("btn-start");
+            btnStart.style.display = "block";
+            btnStart.innerText = "COMEÇAR RODADA";
+            // O click chama reqIniciarPartida -> acaoDistribuir
+          } else {
+            document.getElementById("aviso-rodada").innerText =
+              "Aguardando distribuição...";
+            document.getElementById("aviso-rodada").style.display = "block";
+          }
+        });
+
+        // Truco Request Listener
+        socket.on("truco_request", (data) => {
+          const requesterSlot = data.slot;
+          const requestedValue = data.valor;
+          const phrase = data.phrase; // Frase personalizada enviada pelo solicitante
+
+          let label = "TRUCO!";
+          if (requestedValue === 6) label = "SEIS!";
+          if (requestedValue === 9) label = "NOVE!";
+          if (requestedValue === 12) label = "DOZE!";
+
+          // Usa a frase personalizada se disponível, senão fallback
+          mostrarBalaoFala(requesterSlot, phrase || label);
+
+          const requesterTeam = requesterSlot % 2;
+          const myTeam = mySlot % 2;
+
+          if (requesterTeam !== myTeam) {
+            document.getElementById("titulo-modal").innerText =
+              `${label} (Vale ${requestedValue})`;
+            document.getElementById("modal-decisao").style.display = "flex";
+          }
+        });
+
+        // Truco Response Listener
+        socket.on("truco_response", (data) => {
+          const responderSlot = data.slot;
+          const txt = data.aceitou ? "CAI DENTRO!" : "CORRI!";
+          mostrarBalaoFala(responderSlot, txt);
+
+          document.getElementById("modal-decisao").style.display = "none";
+
+          if (data.aceitou) {
+            valorMao = data.valor;
+            document.getElementById("valor-atual").innerText = valorMao;
+
+            const myTeam = mySlot % 2;
+            const responderTeam = responderSlot % 2;
+
+            if (myTeam === responderTeam) {
+              quemPodeAumentar = "nos"; // Nos = Time do server 0? Nao, 'nos' variavel local.
+              // Mas 'nos' na logica offline significa "quem esta jogando/eu".
+              // Se eu sou do time que respondeu, eu posso aumentar.
+              if (valorMao < 12) {
+                document.getElementById("btn-truco").innerText =
+                  `PEDIR ${getProximoValor(valorMao)}`;
+                document.getElementById("btn-truco").style.display = "block";
+              }
+            } else {
+              quemPodeAumentar = "eles"; // 'eles' n podem.
+              document.getElementById("btn-truco").style.display = "none";
+            }
+
+            // Alerta Geral
+            // alert(`ACEITARAM! VALE ${valorMao}`);
+            // Proximo passo
+            proximoPasso();
+          } else {
+            const vencedor = responderSlot % 2 === 0 ? "eles" : "nos";
+            // alert("CORRERAM!");
+            finalizarMao(vencedor, valorMao);
+          }
+        });
+
+        // Listener para receber as cartas distribuidas pelo Host
+        socket.on("distribuir_cartas", (data) => {
+          maos = data.maos;
+          manilhaValor = data.manilhaValor;
+          jogadorQueComeca = data.jogadorQueComeca;
+          valorMao = data.valorMao || 1;
+          quemPodeAumentar = data.quemPodeAumentar || "todos";
+          jogadasMesa = [];
+
+          document.getElementById("valor-atual").innerText = valorMao;
+
+          // Vira
+          const viraSlot = document.getElementById("vira-slot");
+          viraSlot.querySelectorAll(".carta").forEach((c) => c.remove());
+          viraSlot.appendChild(criarCardUI(data.vira, true));
+
+          // UI Clean up
+          document.getElementById("btn-start").style.display = "none";
+          document.getElementById("aviso-rodada").style.display = "none";
+
+          // Render
+          for (let i = 0; i < 4; i++) renderMao(i);
+
+          // Inicia Turno
+          turnoAtual = jogadorQueComeca;
+          proximoPasso();
+        });
+
+        socket.on("jogada_remota", (data) => {
+          // { j, c, p, isCoberta }
+          // Remover carta da mao visual do oponente (ou nossa caso bug?)
+          // Se j != mySlot
+          if (data.j !== mySlot) {
+            const hand = maos[data.j];
+            if (hand && hand.length > 0) hand.pop(); // Remove 1 dummy
+          }
+
+          jogadasMesa.push(data);
+          const div = criarCardUI(data.c, !data.isCoberta);
+          div.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
+          document.getElementById("centro-mesa").appendChild(div);
+
+          renderMao(data.j);
+
+          turnoAtual = (turnoAtual + 1) % 4;
+
+          if (jogadasMesa.length < 4) proximoPasso();
+          else resolver();
+        });
+
+        // NOVO: Listeners de Estado (Autoridade Host)
+        socket.on("end_round", async (data) => {
+          // data: { winner, winnerSlot } "nos" ou "eles" (ponto de vista do Host/Server)
+          // Se eu sou Time 1 (1 ou 3), e server diz "nos" (0 ou 2), para mim é "eles".
+          // Mas aqui 'winner' já vem como 'nos' ou 'eles' string?
+          // Vamos padronizar: Host envia 'winnerTeam' (0 ou 1). 0=Nos, 1=Eles.
+
+          const serverWinnerTeam = data.winnerTeam; // 0 ou 1
+          const myTeam = mySlot % 2;
+
+          // Mapear para visual 'nos'/'eles'
+          let visualWinner = "";
+          if (serverWinnerTeam === myTeam)
+            visualWinner = "nos"; // Meu time ganhou
+          else visualWinner = "eles"; // Outro time
+
+          // Atualizar UI
+          mostrarAvisoVencedorRodada(visualWinner);
+
+          // Atualizar Quedas
+          // quedasNaMao.nos refere-se ao MEU time ou ao time 'nos' do server?
+          // O código original usa quedasNaMao.nos para o time visual da esquerda.
+          // PADRÃO: quedasNaMao.nos = Time 0 (Server). quedasNaMao.eles = Time 1.
+          // Assim fica consistente com Placar Geral.
+
+          const servidorVenceuQuem = serverWinnerTeam === 0 ? "nos" : "eles"; // Quem ganhou no server
+
+          let dot = document.getElementById(`queda-${quedasNaMao.total}`);
+          if (servidorVenceuQuem === "nos") {
+            quedasNaMao.nos++;
+            if (dot) dot.classList.add("queda-nos");
+          } else {
+            quedasNaMao.eles++;
+            if (dot) dot.classList.add("queda-eles");
+          }
+
+          quedasNaMao.total++;
+          turnoAtual = data.nextTurn; // Quem torna
+
+          // Limpar mesa visualmente apos delay
+          await new Promise((r) => setTimeout(r, 1800));
+          document.getElementById("aviso-rodada").style.display = "none";
+          document.getElementById("centro-mesa").innerHTML =
+            '<div id="aviso-rodada"></div>';
+          jogadasMesa = [];
+
+          // Se sou Host, verificar fim de mão (2 quedas)
+          if (isRoomCreator || mySlot === 0) {
+            if (quedasNaMao.nos >= 2 || quedasNaMao.eles >= 2) {
+              const vencedorMao = quedasNaMao.nos >= 2 ? "nos" : "eles"; // 'nos'(0) ou 'eles'(1)
+              // Emitir fim de mao
+              socket.emit("end_game_hand", {
+                winner: vencedorMao,
+                points: valorMao,
+              });
+            } else {
+              proximoPasso();
+            }
+          } else {
+            // Cliente apenas espera proximo passo ou fim de jogo
+            if (!(quedasNaMao.nos >= 2 || quedasNaMao.eles >= 2)) {
+              proximoPasso();
+            }
+          }
+        });
+
+        socket.on("end_game_hand", (data) => {
+          // data: { winner: 'nos'|'eles', points: N } (Server Perspective)
+          finalizarMao(data.winner, data.points, true); // true = forced/remote
+        });
+      }
+
+      function reqIniciarPartida() {
+        console.log(
+          "reqIniciarPartida chamado. Online:",
+          isOnline,
+          "MySlot:",
+          mySlot,
+          "Creator:",
+          isRoomCreator,
+        );
+
+        if (isOnline) {
+          // Online: Botão distribui cartas
+          if (isRoomCreator || mySlot === 0) {
+            console.log("Chamando acaoDistribuir...");
+            acaoDistribuir();
+          } else {
+            console.log("Não sou host, ignorando click.");
+          }
+        } else {
+          iniciarPartida();
+        }
+      }
+
+      function acaoDistribuir() {
+        try {
+          console.log("acaoDistribuir executando...");
+          // Gerar baralho
+          let baralho = [];
+          for (let n of naipes)
+            for (let v of ordemTruco)
+              baralho.push({
+                v,
+                n,
+                cor: n === "♦" || n === "♥" ? "#e74c3c" : "#333",
+              });
+          baralho.sort(() => Math.random() - 0.5);
+
+          const vira = baralho.pop();
+          // Calcular manilha localmente
+          const idxVira = ordemTruco.indexOf(vira.v);
+          const idxManilha = (idxVira + 1) % 10;
+          const valorManilha = ordemTruco[idxManilha];
+
+          const maosGeradas = [[], [], [], []];
+
+          for (let i = 0; i < 4; i++) {
+            maosGeradas[i] = [baralho.pop(), baralho.pop(), baralho.pop()];
+          }
+
+          const payload = {
+            roomId: roomId,
+            maos: maosGeradas,
+            vira: vira,
+            manilhaValor: valorManilha,
+            jogadorQueComeca: jogadorQueComeca,
+            valorMao: 1,
+            quemPodeAumentar: "todos",
+          };
+
+          // Atualizar Estado Local do Host
+          maos = maosGeradas;
+          manilhaValor = valorManilha;
+          valorMao = 1;
+          quemPodeAumentar = "todos";
+          jogadasMesa = [];
+          document.getElementById("valor-atual").innerText = valorMao;
+
+          // Render UI Host
+          const viraSlot = document.getElementById("vira-slot");
+          viraSlot.innerHTML = ""; // Clear properly
+          viraSlot.appendChild(criarCardUI(vira, true));
+
+          document.getElementById("btn-start").style.display = "none";
+
+          for (let i = 0; i < 4; i++) renderMao(i);
+
+          // Enviar para outros
+          if (socket) {
+            console.log("Enviando distribuir_cartas para sala:", roomId);
+            socket.emit("distribuir_cartas", payload);
+          } else {
+            alert("Erro: Socket desconectado!");
+          }
+
+          turnoAtual = jogadorQueComeca;
+          proximoPasso();
+        } catch (e) {
+          console.error("Erro em acaoDistribuir:", e);
+          alert("Erro ao distribuir cartas: " + e.message);
+        }
+      }
+
+      function renderLobbySeats(players) {
+        let myPlayer = null;
+        let occupiedCount = 0;
+
+        // varrer slots 0..3
+        for (let i = 0; i < 4; i++) {
+          const p = players[i];
+          const seatDiv = document.getElementById(`seat-${i}`);
+          const preview = seatDiv.querySelector(".avatar-preview");
+          const label = seatDiv.querySelector("span");
+
+          // Limpar estados CSS e Resetar
+          seatDiv.classList.remove("ocupado");
+          preview.innerHTML = "";
+          seatDiv.style.cursor = "pointer";
+          seatDiv.style.opacity = "1"; /* Reset opacity */
+
+          if (p) {
+            // Ocupado
+            occupiedCount++;
+            seatDiv.classList.add("ocupado");
+            preview.innerHTML = AVATARS[p.avatarId] || AVATARS[0];
+            label.innerText = p.name + (p.id === socket.id ? " (VOCÊ)" : "");
+            if (p.id === socket.id) myPlayer = { slot: i, ...p };
+          } else {
+            // Vazio
+            const roles = [
+              "VOCÊ (Sul)",
+              "ESQUERDA (Oeste)",
+              "FRENTE (Parceiro)",
+              "DIREITA (Leste)",
+            ];
+
+            if (isRoomCreator && i !== 0) {
+              // Host só pode sentar no 0. Bloquear visualmente os outros.
+              label.innerText = "BLOQUEADO";
+              seatDiv.style.cursor = "not-allowed";
+              seatDiv.style.opacity = "0.3";
+            } else {
+              label.innerText = roles[i] + " - LIVRE";
+            }
+          }
+        }
+
+        // Atualizar globais
+        if (myPlayer) {
+          mySlot = myPlayer.slot;
+        } else {
+          mySlot = -1;
+        }
+
+        // Botão Iniciar
+        const btnStart = document.getElementById("btn-iniciar-lobby");
+        const amIHost = isRoomCreator || mySlot === 0;
+
+        if (amIHost) {
+          btnStart.innerText = `INICIAR (${occupiedCount}/4)`;
+          if (occupiedCount === 4) {
+            btnStart.classList.remove("disabled");
+            btnStart.disabled = false;
+            btnStart.style.opacity = "1";
+            btnStart.style.cursor = "pointer";
+          } else {
+            btnStart.classList.add("disabled");
+            btnStart.disabled = true;
+            btnStart.style.opacity = "0.5";
+            btnStart.style.cursor = "not-allowed";
+          }
+        } else {
+          btnStart.innerText = "AGUARDANDO HOST...";
+          btnStart.disabled = true;
+          btnStart.style.opacity = "0.5";
+          btnStart.style.cursor = "default";
+        }
+      }
+
+      function iniciarOffline() {
+        isOnline = false;
+        document.getElementById("menu-inicial").style.display = "none";
+        document.getElementById("sala-info").style.display = "block";
+        document.getElementById("btn-sair").style.display = "block"; // Mostrar Botão Sair
+        document.getElementById("sala-info").innerText =
+          "Modo: Offline (Vs CPU)";
+        document.getElementById("btn-start").style.display = "block";
+        // Gerar nomes aleatórios para os bots
+        const nomesBots = [
+          "Tonhão",
+          "Zé da Manga",
+          "Chico Bento",
+          "Tião",
+          "Jurema",
+          "Lampiao",
+          "Maria Bonita",
+          "Jacinto",
+          "Cabo Daciolo",
+          "Tiririca",
+        ];
+        const escolhidos = [];
+        // Eu:
+        const eu = { name: "Você", avatarId: 0, id: "local" };
+        const botsMap = { 0: eu };
+        while (escolhidos.length < 3) {
+          const r = nomesBots[Math.floor(Math.random() * nomesBots.length)];
+          if (!escolhidos.includes(r)) escolhidos.push(r);
+        }
+        // Slots 1, 2, 3
+        for (let i = 1; i <= 3; i++) {
+          botsMap[i] = {
+            name: escolhidos[i - 1],
+            avatarId: Math.floor(Math.random() * AVATARS.length),
+            id: "bot" + i,
+          };
+        }
+        window.currentPlayers = botsMap;
+        mySlot = 0; // Offline sempre 0
+        atualizarNomesVisuais();
+        document.getElementById("btn-start").innerText = "COMEÇAR JOGO";
+        document.getElementById("btn-start").disabled = false;
+      }
+      // Garantir escopo global para funções usadas no HTML (apenas uma vez, fora de qualquer função)
+
+      function atualizarNomesVisuais() {
+        // Base: mySlot
+        // Visao: Sul(0), Oeste(1), Norte(2), Leste(3) VISUAIS
+        // Se mySlot = 0:
+        // Visual Sul(0) <- Server 0
+        // Visual Oeste(1) <- Server 1 (Direita? Nao, anti-horario: 0->1->2->3)
+        // Se jogo roda anti-horario: 0 joga, depois 1. Entao 1 está a direita de 0.
+        // Mesa de Truco: J0, J1(Dir), J2(Frente), J3(Esq).
+        // SE J1 é o próximo a jogar, ele está a direita.
+
+        // Vamos convencionar:
+        // HTML: j0 (Sul/Voce), j1(Oeste/Esq), j3(Leste/Dir), j2(Norte/Frente)
+        // Server Order: 0 -> 1 -> 2 -> 3
+        // Se 0 joga, o proximo é 1.
+        // Se rodar anti-horario, o proximo é direita. Entao 1 é Direita (Leste).
+        // 2 é Frente (Norte).
+        // 3 é Esquerda (Oeste).
+
+        // Então Mapping:
+        // Server 0 (Eu) -> j0 (Sul)
+        // Server 1 (Dir) -> j3 (Leste)
+        // Server 2 (Frente) -> j2 (Norte)
+        // Server 3 (Esq) -> j1 (Oeste)
+
+        // Formula: delta = serverIdx - mySlot (+4 %4)
+        // delta 0 -> j0
+        // delta 1 -> j3
+        // delta 2 -> j2
+        // delta 3 -> j1
+
+        const mapId = ["j0", "j3", "j2", "j1"];
+        // indices: 0(sul), 1(leste/dir), 2(norte), 3(oeste/esq)
+
+        const baseSlot = mySlot === -1 ? 0 : mySlot;
+
+        document
+          .querySelectorAll(".nome-j")
+          .forEach((e) => (e.innerText = "VAZIO"));
+        document.querySelectorAll(".avatar-mesa").forEach((e) => e.remove());
+
+        if (window.currentPlayers) {
+          for (let i = 0; i < 4; i++) {
+            if (window.currentPlayers[i]) {
+              const delta = (i - baseSlot + 4) % 4;
+              // delta=0(Eu) -> mapId[0]=j0.
+              // delta=1(Dir) -> mapId[1]=j3.
+
+              const elId = mapId[delta];
+              const el = document.getElementById(elId);
+              if (!el) return;
+
+              let display = window.currentPlayers[i].name;
+              if (i === 0 && isOnline) display += " (Host)";
+              if (i === jogadorQueComeca) display += " ✋";
+
+              el.querySelector(".nome-j").innerText = display;
+              // Avatar
+              const avatarDiv = document.createElement("div");
+              avatarDiv.className = "avatar-mesa";
+              avatarDiv.innerHTML =
+                AVATARS[window.currentPlayers[i].avatarId] || AVATARS[0];
+              el.prepend(avatarDiv); // add top
+            }
+          }
+        }
+      }
+
+      function renderMao(serverIdx) {
+        // Usa mesma lógica visual:
+        // delta 0 -> j0, 1 -> j3, 2 -> j2, 3 -> j1.
+        const mapId = ["j0", "j3", "j2", "j1"];
+
+        const baseSlot = mySlot === -1 ? 0 : mySlot;
+        const delta = (serverIdx - baseSlot + 4) % 4;
+        const elId = mapId[delta];
+
+        const cont = document.querySelector(`#${elId} .cartas`);
+        if (!cont) return;
+        cont.innerHTML = "";
+
+        if (!maos[serverIdx]) return;
+
+        maos[serverIdx].forEach((c, idx) => {
+          if (!c) return;
+          // Se é minha vez de ver?
+          // Se sou eu (delta=0) -> Vejo Frente.
+          // Se sou outro -> Vejo Verso.
+          // Se offline -> Eu vejo Frente, outros Verso.
+
+          const isMe = delta === 0;
+
+          let showFront = isMe;
+
+          // Lógica Mão de 11: Se meu time tem 11 e o outro < 11, vejo parceiro
+          if (!showFront && mySlot !== -1) {
+            const myTeam = mySlot % 2;
+            // Placar: nos=Time0, eles=Time1
+            const myScore = myTeam === 0 ? placarGeral.nos : placarGeral.eles;
+            const otherScore =
+              myTeam === 0 ? placarGeral.eles : placarGeral.nos;
+
+            if (myScore === 11 && otherScore < 11) {
+              const partnerSlot = (mySlot + 2) % 4;
+              if (serverIdx === partnerSlot) showFront = true;
+            }
+          }
+
+          const el = criarCardUI(c, showFront);
+          if (isMe && showFront) el.onclick = () => jogar(serverIdx, idx); // Click só nas minhas
+          cont.appendChild(el);
+        });
+      }
+
+      function iniciarPartida(remoteStart = false) {
+        document.getElementById("btn-start").style.display = "none";
+        document.getElementById("centro-mesa").innerHTML =
+          '<div id="aviso-rodada"></div>';
+        document.getElementById("btn-correr").style.display = "none";
+        document.getElementById("btn-truco").style.display = "none";
+        document.getElementById("btn-coberta").style.display = "none";
+        modoCartaCoberta = false;
+        document.getElementById("btn-coberta").classList.remove("ativo");
+
+        quedasNaMao = { nos: 0, eles: 0, total: 0 };
+        for (let i = 0; i < 3; i++)
+          document.getElementById(`queda-${i}`).className = "queda-dot";
+
+        valorMao = 1;
+        quemPodeAumentar = "todos";
+        document.getElementById("valor-atual").innerText = 1;
+        document.getElementById("btn-truco").innerText = "🧨 TRUCO!";
+
+        // Se online e eu nao tenho dados ainda (remoteStart true ja tratou isso)
+        if (isOnline && !remoteStart) return;
+
+        // Se Offline, gerar dados:
+        if (!isOnline) {
+          let baralho = [];
+          for (let n of naipes)
+            for (let v of ordemTruco)
+              baralho.push({
+                v,
+                n,
+                cor: n === "♦" || n === "♥" ? "#e74c3c" : "#333",
+              });
+          baralho.sort(() => Math.random() - 0.5);
+
+          const vira = baralho.pop();
+          manilhaValor = ordemTruco[(ordemTruco.indexOf(vira.v) + 1) % 10];
+          const viraSlot = document.getElementById("vira-slot");
+          viraSlot.querySelectorAll(".carta").forEach((c) => c.remove());
+          viraSlot.appendChild(criarCardUI(vira, true));
+
+          // Distribuir
+          for (let i = 0; i < 4; i++) {
+            maos[i] = [baralho.pop(), baralho.pop(), baralho.pop()];
+          }
+
+          turnoAtual = jogadorQueComeca;
+        }
+
+        // Renderizar localmente
+        for (let i = 0; i < 4; i++) renderMao(i);
+
+        // Mostrar placares individuais
+        document
+          .querySelectorAll(".score-tag")
+          .forEach((el) => (el.style.display = "block"));
+        atualizarPlacaresVisuais();
+
+        proximoPasso();
+      }
+
+      function criarCardUI(c, visivel) {
+        const div = document.createElement("div");
+        div.className = "carta";
+        if (visivel) {
+          div.style.color = c.cor;
+          div.innerHTML = `<span>${c.v}</span><span>${c.n}</span>`;
+          if (c.v === manilhaValor) div.classList.add("manilha");
+        } else {
+          div.classList.add("verso");
+        }
+        return div;
+      }
+
+      function toggleModoCoberta() {
+        modoCartaCoberta = !modoCartaCoberta;
+        const btn = document.getElementById("btn-coberta");
+        if (modoCartaCoberta) btn.classList.add("ativo");
+        else btn.classList.remove("ativo");
+      }
+
+      async function jogar(j, idx) {
+        if (j !== turnoAtual) {
+          console.warn("Não é sua vez de jogar!");
+          return;
+        }
+
+        if (isOnline && j !== mySlot) return; // Segurança
+
+        document.getElementById("btn-truco").style.display = "none";
+        document.getElementById("btn-correr").style.display = "none";
+        document.getElementById("btn-coberta").style.display = "none";
+
+        const c = maos[j][idx];
+        maos[j].splice(idx, 1);
+
+        let p = ordemTruco.indexOf(c.v) + (c.v === manilhaValor ? 100 : 0);
+        if (c.v === manilhaValor) p += naipes.indexOf(c.n);
+
+        let isCoberta = false;
+        // Se offline ou online meu:
+        if (
+          (!isOnline && j === 0 && modoCartaCoberta) ||
+          (isOnline && j === mySlot && modoCartaCoberta)
+        ) {
+          isCoberta = true;
+          p = -1;
+          modoCartaCoberta = false;
+          document.getElementById("btn-coberta").classList.remove("ativo");
+        }
+
+        if (isOnline) {
+          socket.emit("jogar_carta", { roomId, j, c, p, isCoberta });
+        }
+
+        jogadasMesa.push({ j, p, c, isCoberta });
+        const div = criarCardUI(c, !isCoberta);
+        div.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
+        document.getElementById("centro-mesa").appendChild(div);
+
+        renderMao(j);
+
+        // Server Order: 0->1->2->3
+        turnoAtual = (turnoAtual + 1) % 4;
+        if (jogadasMesa.length < 4) proximoPasso();
+        else resolver();
+      }
+
+      async function proximoPasso() {
+        // Atualizar Indicador Visual de Vez
+        document
+          .querySelectorAll(".jogador")
+          .forEach((el) => el.classList.remove("vez-de-jogar"));
+
+        const mapId = ["j0", "j3", "j2", "j1"];
+        const baseSlot = mySlot === -1 ? 0 : mySlot;
+        const delta = (turnoAtual - baseSlot + 4) % 4;
+        const elId = mapId[delta];
+        const activeEl = document.getElementById(elId);
+        if (activeEl) activeEl.classList.add("vez-de-jogar");
+
+        if (isOnline) {
+          if (turnoAtual === mySlot) {
+            document.getElementById("btn-correr").style.display = "block";
+
+            if (
+              valorMao < 12 &&
+              (quemPodeAumentar === "todos" || quemPodeAumentar === "nos")
+            ) {
+              document.getElementById("btn-truco").style.display = "block";
+              const nextVal = getProximoValor(valorMao);
+              document.getElementById("btn-truco").innerText =
+                nextVal === 3 ? "🧨 TRUCO!" : `PEDIR ${nextVal}`;
+            } else {
+              document.getElementById("btn-truco").style.display = "none";
+            }
+
+            const cartasRestantes = maos[mySlot] ? maos[mySlot].length : 0;
+            if (cartasRestantes === 2)
+              document.getElementById("btn-coberta").style.display = "block";
+          }
+          return;
+        }
+
+        // Offline Logic (Vs CPU)
+        if (turnoAtual === 0) {
+          document.getElementById("btn-correr").style.display = "block";
+          if (
+            (quemPodeAumentar === "todos" || quemPodeAumentar === "nos") &&
+            valorMao < 12
+          ) {
+            document.getElementById("btn-truco").style.display = "block";
+          }
+          const cartasRestantes = maos[0].filter((c) => c !== null).length;
+          if (cartasRestantes === 2) {
+            document.getElementById("btn-coberta").style.display = "block";
+          } else {
+            document.getElementById("btn-coberta").style.display = "none";
+          }
+        } else {
+          await new Promise((r) => setTimeout(r, 800));
+          // IA Logic
+          if (
+            (quemPodeAumentar === "todos" || quemPodeAumentar === "eles") &&
+            valorMao < 12 &&
+            Math.random() > 0.98
+          ) {
+            iaPedeAumento();
+          } else {
+            if (maos[turnoAtual] && maos[turnoAtual].length > 0) {
+              jogar(turnoAtual, 0); // Joga a primeira carta
+            }
+          }
+        }
+      }
+
+      function fugirMao() {
+        if (
+          confirm(
+            "Deseja realmente correr desta mão? Eles ganharão os pontos atuais.",
+          )
+        ) {
+           if(isOnline) {
+                socket.emit('player_concede');
+           } else {
+                finalizarMao("eles", valorMao);
+           }
+        }
+      }
+
+      function getProximoValor(atual) {
+        return atual === 1 ? 3 : atual >= 12 ? 12 : atual + 3;
+      }
+
+      let provocacaoInterval = null;
+      const frasesProvocacao = [
+        "Tá pensando por que tá com medo?",
+        "Se pensar vai correr!",
+        "Tá tremendo é?",
+        "Vai amarelar?",
+        "Aceita logo, pato!",
+        "O medo tem cheiro!",
+        "Pede 6 logo se tiver coragem!",
+      ];
+
+      function pedirTruco() {
+        const nV = getProximoValor(valorMao);
+
+        document.getElementById("btn-truco").style.display = "none";
+        document.getElementById("btn-correr").style.display = "none";
+        document.getElementById("btn-coberta").style.display = "none";
+
+        // Selecionar lista de frases baseada no valor pedido (nV)
+        let listaFrases = frasesTruco;
+        if (nV === 6) listaFrases = frasesSeis;
+        if (nV === 9) listaFrases = frasesNove;
+        if (nV === 12) listaFrases = frasesDoze;
+
+        const frase = listaFrases[Math.floor(Math.random() * listaFrases.length)];
+
+        if (isOnline) {
+          mostrarBalaoFala(mySlot, frase);
+
+          socket.emit("truco_request", {
+            roomId,
+            slot: mySlot,
+            valor: nV,
+            phrase: frase, // Envia a frase gerada para consistência
+          });
+          return;
+        }
+
+        // Offline Logic
+        mostrarBalaoFala(mySlot !== -1 ? mySlot : 0, frase);
+
+        // ... (rest json offline logic)
+        if (provocacaoInterval) clearInterval(provocacaoInterval);
+        provocacaoInterval = setInterval(() => {
+          const pFrase =
+            frasesProvocacao[
+              Math.floor(Math.random() * frasesProvocacao.length)
+            ];
+          mostrarBalaoFala(mySlot !== -1 ? mySlot : 0, pFrase);
+        }, 5000);
+
+        setTimeout(() => {
+          clearInterval(provocacaoInterval);
+          if (Math.random() > 0.4) {
+            valorMao = nV;
+            quemPodeAumentar = "eles";
+            document.getElementById("valor-atual").innerText = valorMao;
+            document.getElementById("btn-truco").innerText =
+              `PEDIR ${getProximoValor(valorMao)}`;
+            alert(`ELES ACEITARAM O ${valorMao}!`);
+            proximoPasso();
+          } else {
+            alert("ELES CORRERAM!");
+            finalizarMao("nos", valorMao);
+          }
+        }, 10000);
+      }
+
+      function iaPedeAumento() {
+        let nV = getProximoValor(valorMao);
+        const frase =
+          frasesTruco[Math.floor(Math.random() * frasesTruco.length)];
+        mostrarBalaoFala(turnoAtual, frase);
+
+        setTimeout(() => {
+          document.getElementById("titulo-modal").innerText =
+            nV === 3 ? "TRUCO!" : `PEDIU ${nV}!`;
+          document.getElementById("modal-decisao").style.display = "flex";
+        }, 1000);
+      }
+
+      function decisaoHumana(aceitou) {
+        document.getElementById("modal-decisao").style.display = "none";
+
+        if (isOnline) {
+          if (aceitou) {
+            // Atualiza estado local imediatamente para refletir que aceitei
+            valorMao = getProximoValor(valorMao);
+            document.getElementById("valor-atual").innerText = valorMao;
+            quemPodeAumentar = "nos"; // Eu aceitei, posso aumentar depois
+
+            proximoPasso();
+          } else {
+            // Corri
+            const vencedor = mySlot % 2 === 0 ? "eles" : "nos"; // Se eu (Time 0) corri, eles (Time 1) ganharam.
+            // Mas espera, finalizarMao espera 'nos' ou 'eles' do ponto de vista do SERVER/GLOBAL?
+            // finalizarMao usa indicesNos=[0,2]. Se vencedor='eles', pontos vão para indicesEles.
+            // Se eu (Time 0) corro, pontos vao para Time 1. Então vencedor='eles'. Correto.
+
+            finalizarMao("eles", valorMao);
+          }
+
+          socket.emit("truco_response", {
+            roomId,
+            slot: mySlot,
+            aceitou: aceitou,
+            valor: aceitou ? valorMao : valorMao, // Valor atualizado se aceitou
+          });
+          return;
+        }
+
+        if (aceitou) {
+          valorMao = getProximoValor(valorMao);
+          quemPodeAumentar = "nos";
+          document.getElementById("valor-atual").innerText = valorMao;
+          document.getElementById("btn-truco").innerText =
+            `PEDIR ${getProximoValor(valorMao)}`;
+
+          // IA Joga apos aceite com delay para naturalidade
+          if (maos[turnoAtual] && maos[turnoAtual].length > 0) {
+            setTimeout(() => {
+              jogar(turnoAtual, 0);
+            }, 1500);
+          }
+        } else {
+          finalizarMao("eles", valorMao);
+        }
+      }
+
+      async function resolver() {
+        // Se Online e NÃO sou Host, não resolvo nada, espero evento.
+        if (isOnline && !(isRoomCreator || mySlot === 0)) return;
+
+        // Lógica Centralizada no Host (ou Offline)
+        let melhor = jogadasMesa[0];
+        // Melhorar lógica de empate se necessário (TODO: Implementar regras de empate truco)
+        // Por enquanto mantendo a logica original de "primeira maior leva"
+        for (let i = 1; i < 4; i++) {
+          if (jogadasMesa[i].p > melhor.p) melhor = jogadasMesa[i];
+        }
+
+        let v = melhor.j;
+        // Times: Nos(0,2), Eles(1,3)
+        let winnerTeam = v === 0 || v === 2 ? 0 : 1; // 0=Nos, 1=Eles
+
+        if (isOnline) {
+          // Host decide e avisa
+          socket.emit("end_round", {
+            winnerTeam: winnerTeam,
+            winnerSlot: v,
+            nextTurn: v,
+          });
+        } else {
+          // Offline: Simula evento local
+          // Adaptar para chamar a lógica de UI diretamente
+          // Mas como refatorei a UI para dentro do socket.on('end_round'), preciso extrair a UI.
+          // Para não duplicar, vou chamar uma função auxiliar.
+          aplicarResultadoRodada({ winnerTeam, nextTurn: v });
+        }
+      }
+
+      // Auxiliar para Offline (ou se quisesse aproveitar código)
+      async function aplicarResultadoRodada(data) {
+        const serverWinnerTeam = data.winnerTeam;
+        const myTeam = mySlot === -1 ? 0 : mySlot % 2;
+
+        let visualWinner = serverWinnerTeam === myTeam ? "nos" : "eles";
+        mostrarAvisoVencedorRodada(visualWinner);
+
+        const servidorVenceuQuem = serverWinnerTeam === 0 ? "nos" : "eles";
+
+        let dot = document.getElementById(`queda-${quedasNaMao.total}`);
+        if (servidorVenceuQuem === "nos") {
+          quedasNaMao.nos++;
+          if (dot) dot.classList.add("queda-nos");
+        } else {
+          quedasNaMao.eles++;
+          if (dot) dot.classList.add("queda-eles");
+        }
+
+        quedasNaMao.total++;
+        turnoAtual = data.nextTurn;
+
+        await new Promise((r) => setTimeout(r, 1800));
+        document.getElementById("aviso-rodada").style.display = "none";
+        document.getElementById("centro-mesa").innerHTML =
+          '<div id="aviso-rodada"></div>';
+        jogadasMesa = [];
+
+        if (quedasNaMao.nos >= 2 || quedasNaMao.eles >= 2) {
+          finalizarMao(quedasNaMao.nos >= 2 ? "nos" : "eles", valorMao);
+        } else {
+          proximoPasso();
+        }
+      }
+
+      function mostrarAvisoVencedorRodada(visualWinner) {
+        const aviso = document.getElementById("aviso-rodada");
+        aviso.innerText =
+          visualWinner === "nos" ? "NÓS LEVAMOS!" : "ELES LEVARAM!";
+        aviso.style.color =
+          visualWinner === "nos" ? "var(--cor-nos)" : "var(--cor-eles)";
+        aviso.style.display = "block";
+      }
+
+      function finalizarMao(vencedor, pontos, isRemote = false) {
+        // Se Online e não for remoto (chamada local), ignorar se não for host
+        // Mas espera, se alguém correu ('correram'), a chamada é local em quem correu?
+        // Se for online, a decisao de 'correr' emite 'truco_response' com aceitou:false.
+        // O listener do 'truco_response' chama finalizarMao.
+        // Devemos mudar isso também: Host recebe a recusa -> emite 'end_game_hand'.
+
+        if (isOnline && !isRemote) {
+          // Se eu sou Host, emito. Se não, não faço nada (espero o evento do host).
+          if (isRoomCreator || mySlot === 0) {
+            socket.emit("end_game_hand", { winner: vencedor, points: pontos });
+          }
+          return; // UI só atualiza quando voltar do server
+        }
+
+        // Logica de UI (Executada por todos ao receber evento do server ou offline)
+
+        // Atualizar Stats Individuais
+        const indicesNos = [0, 2];
+        const indicesEles = [1, 3];
+
+        if (vencedor === "nos") {
+          indicesNos.forEach((i) => (statsJogadores[i].g += pontos));
+          indicesEles.forEach((i) => (statsJogadores[i].p += pontos));
+        } else {
+          indicesEles.forEach((i) => (statsJogadores[i].g += pontos));
+          indicesNos.forEach((i) => (statsJogadores[i].p += pontos));
+        }
+
+        placarGeral[vencedor] += pontos;
+        atualizarPlacaresVisuais();
+
+        // Atualiza Placar Geral Orientado ao Jogador
+        // placarGeral.nos = Time 0 (0 e 2)
+        // placarGeral.eles = Time 1 (1 e 3)
+        let scoreNos = placarGeral.nos;
+        let scoreEles = placarGeral.eles;
+
+        if (isOnline && (mySlot === 1 || mySlot === 3)) {
+          // Eu sou Time 1 (1 e 3), logo "Nós" deve mostrar os pontos do Time 1 (que no server é 'eles')
+          scoreNos = placarGeral.eles;
+          scoreEles = placarGeral.nos;
+        }
+
+        document.getElementById("p-nos").innerText = scoreNos;
+        document.getElementById("p-eles").innerText = scoreEles;
+
+        if (placarGeral.nos >= 12 || placarGeral.eles >= 12) {
+          // PARTIDA ACABOU
+
+          // Init Global Counter se nao existir
+          if (!window.partidasGanhas)
+            window.partidasGanhas = { nos: 0, eles: 0 };
+          window.partidasGanhas[vencedor]++;
+
+          // Atualizar UI Partidas
+          atualizarPartidasUI();
+
+          // Mensagem
+          // Vencedor: 'nos'(0) ou 'eles'(1).
+          // Se sou Time 1: 'nos' -> 'eles' visualmente. 'eles' -> 'nos' visualmente.
+          let msg = "";
+          if (isOnline && (mySlot === 1 || mySlot === 3)) {
+            if (vencedor === "nos")
+              msg = "ELES VENCERAM A PARTIDA!"; // Server 0 ganhou, sou 1
+            else msg = "VOCÊS VENCERAM A PARTIDA!"; // Server 1 ganhou, sou 1
+          } else {
+            if (vencedor === "nos") msg = "VOCÊS VENCERAM A PARTIDA!";
+            else msg = "ELES VENCERAM A PARTIDA!";
+          }
+          alert(msg);
+
+          // RESET TOTAL PARCIAL
+          placarGeral = { nos: 0, eles: 0 };
+          document.getElementById("p-nos").innerText = "0";
+          document.getElementById("p-eles").innerText = "0";
+
+          // Limpar quedas visualmente
+          document.querySelectorAll(".queda-dot").forEach((d) => {
+            d.className = "queda-dot";
+          });
+          quedasNaMao = { nos: 0, eles: 0, total: 0 };
+
+          // Reiniciar Ciclo
+          jogadorQueComeca = (jogadorQueComeca + 1) % 4;
+          if (isOnline) {
+            iniciarPartida();
+            if (isRoomCreator || mySlot === 0) {
+              setTimeout(() => acaoDistribuir(), 2000);
+            }
+          } else {
+            setTimeout(iniciarPartida, 1000);
+          }
+        } else {
+          jogadorQueComeca = (jogadorQueComeca + 1) % 4; // Server Order +1
+
+          if (isOnline) {
+            // Limpa mesa localmente
+            iniciarPartida();
+
+            // Se for Host, distribuir automaticamente após delay
+            if (isRoomCreator || mySlot === 0) {
+              setTimeout(() => {
+                console.log("Auto-distribuindo nova rodada...");
+                acaoDistribuir();
+              }, 2000);
+            }
+          } else {
+            setTimeout(iniciarPartida, 1000);
+          }
+        }
+      }
+
+      function atualizarPlacaresVisuais() {
+        const baseSlot = mySlot === -1 ? 0 : mySlot;
+        // Visuais: j0, j3, j2, j1 (delta 0,1,2,3)
+        const mapId = ["j0", "j3", "j2", "j1"];
+
+        for (let serverIdx = 0; serverIdx < 4; serverIdx++) {
+          // Delta visual
+          const delta = (serverIdx - baseSlot + 4) % 4;
+          const elId = mapId[delta];
+
+          const st = statsJogadores[serverIdx];
+          const tag = document.querySelector(`#${elId} .score-tag`);
+          if (tag) {
+            tag.innerText = `G: ${st.g}\nP: ${st.p}`;
+            tag.style.color =
+              serverIdx % 2 === 0 ? "var(--cor-nos)" : "var(--cor-eles)";
+          }
+        }
+      }
+
+      function atualizarPartidasUI() {
+        if (!window.partidasGanhas) window.partidasGanhas = { nos: 0, eles: 0 };
+
+        let winsNos = window.partidasGanhas.nos;
+        let winsEles = window.partidasGanhas.eles;
+
+        // Swap visual se sou Team 1
+        if (isOnline && (mySlot === 1 || mySlot === 3)) {
+          winsNos = window.partidasGanhas.eles;
+          winsEles = window.partidasGanhas.nos;
+        }
+
+        document.getElementById("win-nos").innerText = winsNos;
+        document.getElementById("win-eles").innerText = winsEles;
+      }
+
+      function mostrarBalaoFala(serverIdx, texto) {
+        const baseSlot = mySlot === -1 ? 0 : mySlot;
+        const delta = (serverIdx - baseSlot + 4) % 4;
+        const mapId = ["j0", "j3", "j2", "j1"];
+        const elId = mapId[delta];
+
+        const balao = document.createElement("div");
+        balao.className = "balao-fala";
+        balao.innerText = texto;
+
+        const avatar = document.getElementById(elId);
+        if (!avatar) return;
+        const rect = avatar.getBoundingClientRect();
+
+        balao.style.left = rect.left + rect.width / 2 + "px";
+        balao.style.top = rect.top - 50 + "px";
+
+        document.getElementById("camada-baloes").appendChild(balao);
+
+        setTimeout(() => {
+          balao.style.opacity = "0";
+          setTimeout(() => balao.remove(), 500);
+        }, 3000);
+      }
+    </script>
+  </body>
+</html>
