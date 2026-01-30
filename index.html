@@ -6,7 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rye&family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
-    <title>Truco Pro - Progressão 3, 6, 9, 12</title>
+    <title>FTC - Faroeste Truco Championship</title>
     <style>
       :root {
         --cor-nos: #2ecc71;
@@ -21,15 +21,15 @@
       }
 
       body {
-        background: var(--bg-color); /* Fallback */
-        background: radial-gradient(circle at center, #4e342e 0%, #1a0f00 100%);
+        background: #3e2723; /* Fallback */
+        background: radial-gradient(circle at center, #8d6e63 0%, #2c1810 100%);
         font-family: "Roboto Slab", serif;
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100vh;
         margin: 0;
-        color: #f5e6ca; /* Cor de pergaminho claro */
+        color: #f5e6ca; 
         overflow: hidden;
       }
       
@@ -58,69 +58,117 @@
       }
 
       #painel-controle {
-        width: 160px;
-        padding: 15px;
-        background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScyMCcgaGVpZ2h0PScyMCc+PHJlY3Qgd2lkdGg9JzIwJyBoZWlnaHQ9JzIwJyBmaWxsPScjNWQ0MDM3Jy8+PHBhdGggZD0nTTUgNUwxNSAxNScgc3Ryb2tlPScjM2UyNzIzJyBzdHJva2Utd2lkdGg9JzEnIG9wYWNpdHk9JzAuNScvPjwvc3ZnPg==');
-        border-radius: 10px;
-        margin-right: 20px;
+        width: 180px;
+        padding: 20px 15px;
+        /* Papel envelhecido/madeira clara */
+        background: 
+            linear-gradient(rgba(245, 222, 179, 0.4), rgba(245, 222, 179, 0.4)),
+            url('mesa_madeira.png') center/cover no-repeat;
+        filter: sepia(0.3) brightness(1.05); /* Combina com a Fronteira Árida */
+        border-radius: 8px;
+        margin-right: 25px;
         text-align: center;
-        border: 4px solid #8d6e63;
-        box-shadow: 2px 5px 10px rgba(0,0,0,0.5);
-        color: #f5e6ca;
+        border: 4px solid #6d4c41;
+        box-shadow: 
+            0 10px 30px rgba(0,0,0,0.5),
+            inset 0 0 20px rgba(0,0,0,0.2);
+        color: #1a0f00; /* Marrom quase preto para máximo destaque */
+        font-weight: 700;
+        text-shadow: 0 1px 1px rgba(255,255,255,0.3);
         position: relative;
+        z-index: 50;
       }
       #painel-controle::before {
-          content: '★'; position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
-          font-size: 24px; color: var(--gold); text-shadow: 0 2px 2px rgba(0,0,0,0.5);
-          background: #3e2723; border-radius: 50%; padding: 2px 8px; border: 2px solid #8d6e63;
+          content: '★ TRUCO'; 
+          position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+          font-family: 'Rye', serif;
+          font-size: 12px; color: #f1c40f; 
+          background: #3e2723; border: 2px solid #8d6e63;
+          padding: 2px 12px; border-radius: 4px;
+          white-space: nowrap;
+          box-shadow: 0 4px 5px rgba(0,0,0,0.4);
       }
       .score {
-        font-size: 40px;
+        font-family: 'Rye', serif;
+        font-size: 48px;
         font-weight: 900;
-        margin-bottom: 5px;
+        margin-bottom: -5px;
+        color: #2c1810;
+        text-shadow: 
+            2px 2px 0px rgba(255,255,255,0.2),
+            0px 0px 5px rgba(0,0,0,0.1);
       }
 
       #contador-rodadas {
         display: flex;
         justify-content: center;
-        gap: 8px;
-        margin: 10px 0;
+        gap: 12px;
+        margin: 15px 0;
+        padding: 5px;
+        background: rgba(0, 0, 0, 0.4); /* Fundo bem escuro para destacar as luzes */
+        border-radius: 20px;
+        box-shadow: 
+            inset 0 2px 5px rgba(0,0,0,0.6),
+            0 1px 1px rgba(255,255,255,0.1);
+        border: 1px solid rgba(0,0,0,0.3);
       }
       .queda-dot {
-        width: 14px;
-        height: 14px;
+        width: 16px;
+        height: 16px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        transition: all 0.3s;
+        /* Efeito de marca queimada na madeira */
+        background: #1a0f00; 
+        border: 1px solid rgba(255,255,255,0.05);
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
       }
       .queda-nos {
         background: var(--cor-nos);
-        box-shadow: 0 0 10px var(--cor-nos);
-        border: none;
+        box-shadow: 
+            0 0 10px var(--cor-nos),
+            inset 0 0 5px rgba(255,255,255,0.5);
+        border: 2px solid #1e8449; /* Verde fechado */
+        transform: scale(1.1);
       }
       .queda-eles {
         background: var(--cor-eles);
-        box-shadow: 0 0 10px var(--cor-eles);
-        border: none;
+        box-shadow: 
+            0 0 10px var(--cor-eles),
+            inset 0 0 5px rgba(255,255,255,0.5);
+        border: 2px solid #21618c; /* Azul fechado */
+        transform: scale(1.1);
+      }
+      .queda-nos::after, .queda-eles::after {
+          content: '★';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          font-size: 8px;
+          color: rgba(255,255,255,0.6);
       }
 
       #mesa {
-        width: 800px;
-        height: 500px;
-        /* Feltro verde com textura */
-        background: radial-gradient(#27ae60, #145a32);
+        width: 850px;
+        height: 550px;
+        /* Madeira rústica de Velho Oeste - Estilo Fronteira Árida */
+        background: 
+            linear-gradient(rgba(245, 222, 179, 0.05), rgba(245, 222, 179, 0.05)),
+            url('mesa_madeira.png') center/cover no-repeat;
+        filter: sepia(0.4) brightness(0.9) contrast(0.95) grayscale(0.2);
         position: relative;
-        border-radius: 200px;
-        /* Borda de madeira */
-        border: 20px solid #5d4037;
+        border-radius: 120px; 
+        border: 25px solid #6d4c41;
         box-shadow: 
-            inset 0 0 50px rgba(0,0,0,0.8),
-            0 20px 50px rgba(0,0,0,0.6),
-            0 0 0 5px #3e2723; /* Detalhe borda externa */
+            inset 0 0 100px rgba(0,0,0,0.4),
+            0 30px 60px rgba(0,0,0,0.6),
+            0 0 0 8px #5d4037,
+            0 0 0 12px #8d6e63;
         display: flex;
         align-items: center;
         justify-content: center;
+        overflow: hidden;
       }
 
       #vira-container {
@@ -305,61 +353,86 @@
       }
 
       .carta {
-        width: 50px;
-        height: 75px;
-        background: white;
-        color: black;
-        border-radius: 5px;
+        width: 55px;
+        height: 82px;
+        /* Papel envelhecido/pergaminho */
+        background: #fdf5e6;
+        background-image: 
+            radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2), transparent),
+            url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc0JyBoZWlnaHQ9JzQnIGZpbGwtb3BhY2l0eT0nMC4wNSc+PHJlY3Qgd2lkdGg9JzInIGhlaWdodD0nMicvPjwvc3ZnPg==');
+        color: #2c1810;
+        border-radius: 4px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        font-family: 'Rye', serif;
         font-weight: bold;
-        font-size: 16px;
-        border: 1px solid #999;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        font-size: 18px;
+        border: 1px solid #d4a373;
+        box-shadow: 
+            2px 2px 5px rgba(0, 0, 0, 0.4),
+            inset 0 0 10px rgba(139, 69, 19, 0.1);
         position: relative;
         z-index: 2;
+        transition: transform 0.2s;
       }
 
       .manilha {
-        border: 3px solid var(--gold) !important;
-        box-shadow: 0 0 15px var(--gold);
+        border: 3px solid #b8860b !important;
+        box-shadow: 
+            0 0 15px rgba(184, 134, 11, 0.6),
+            inset 0 0 15px rgba(184, 134, 11, 0.2) !important;
+        background-color: #fff8dc !important;
       }
-      .manilha::after {
-        content: "⭐";
+      .manilha::before {
+        content: '★';
         position: absolute;
-        top: -5px;
-        right: -5px;
-        font-size: 12px;
+        top: 2px;
+        left: 2px;
+        font-size: 8px;
+        color: #b8860b;
       }
 
       .sul .carta:hover {
-        transform: translateY(-10px);
+        transform: translateY(-15px) rotate(-2deg) scale(1.1);
         cursor: pointer;
+        z-index: 100;
         border-color: var(--accent);
       }
+
       .verso {
-        background: #8b0000; /* Vermelho escuro clássico */
-        background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.2) 0, rgba(0,0,0,0.2) 5px, transparent 5px, transparent 10px);
-        border: 2px solid #ecf0f1;
-        box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        /* Couro/Madeira Escura para o verso */
+        background: #3e2723;
+        background-image: 
+            repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 2px, transparent 2px, transparent 4px),
+            radial-gradient(circle at center, #5d4037, #3e2723);
+        border: 2px solid #8d6e63;
+        box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
       }
       .verso::after {
-          content: '♠'; font-size: 20px; color: rgba(255,255,255,0.2);
-          position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+          content: 'Oeste'; 
+          font-family: 'Rye', serif;
+          font-size: 8px; 
+          color: rgba(255,255,255,0.15);
+          position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg);
+          border: 1px solid rgba(255,255,255,0.1);
+          padding: 2px;
+          text-transform: uppercase;
       }
 
       #centro-mesa {
-        width: 250px;
-        height: 150px;
-        background: rgba(0, 0, 0, 0.05);
-        border-radius: 50%;
+        width: 320px;
+        height: 200px;
+        background: rgba(0, 0, 0, 0.15);
+        border-radius: 40px;
         display: flex;
         justify-content: center;
         align-items: center;
         gap: 10px;
         position: relative;
+        box-shadow: inset 0 0 40px rgba(0,0,0,0.4);
+        border: 1px solid rgba(255,255,255,0.03);
       }
 
       #aviso-rodada {
@@ -707,10 +780,10 @@
   </head>
   <body>
     <div id="painel-controle">
-      <div style="color: var(--cor-nos)">
+      <div style="color: #1e8449; font-weight: 900; letter-spacing: 1px;">
         NÓS: <span id="p-nos" class="score">0</span>
       </div>
-      <div style="color: var(--cor-eles)">
+      <div style="color: #21618c; font-weight: 900; letter-spacing: 1px;">
         ELES: <span id="p-eles" class="score">0</span>
       </div>
 
@@ -720,23 +793,24 @@
         <div id="queda-2" class="queda-dot"></div>
       </div>
 
-      <hr style="opacity: 0.2" />
-      <div style="font-size: 10px; margin-bottom: 5px; color: #aaa">
+      <hr style="opacity: 0.3; border: 0; border-top: 1px solid #1a0f00; margin: 10px 0;" />
+      <div style="font-size: 11px; font-weight: 900; margin-bottom: 8px; color: #1a0f00; text-transform: uppercase; letter-spacing: 1px;">
         PARTIDAS GANHAS
       </div>
       <div
         style="
           display: flex;
           justify-content: space-between;
-          font-size: 14px;
+          font-size: 16px;
+          font-family: 'Rye', serif;
           font-weight: bold;
           margin-bottom: 10px;
         "
       >
-        <span style="color: var(--cor-nos)"
+        <span style="color: #1e8449"
           >NÓS: <span id="win-nos">0</span></span
         >
-        <span style="color: var(--cor-eles)"
+        <span style="color: #21618c"
           >ELES: <span id="win-eles">0</span></span
         >
       </div>
@@ -874,15 +948,17 @@
     <div id="menu-inicial">
       <h1
         style="
-          font-size: 60px;
+          font-size: 50px;
           margin-bottom: 40px;
           color: var(--gold);
           text-shadow: 0 0 20px var(--gold);
+          font-family: 'Rye', serif;
+          text-align: center;
         "
       >
-        TRUCO PRO
+        FTC - Faroeste Truco Championship
       </h1>
-      <button class="btn-menu btn-vs-pc" onclick="iniciarOffline()">
+      <button class="btn-menu btn-vs-pc" onclick="prepararOffline()">
         JOGAR VS COMPUTADOR
       </button>
       <button class="btn-menu btn-online" onclick="prepararCriarSala()">
@@ -911,9 +987,9 @@
           id="grid-avatares"
           style="
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 10px;
-            width: 300px;
+            width: 320px;
           "
         >
           <!-- Avatares injetados via JS -->
@@ -1078,25 +1154,37 @@
       const naipes = ["♦", "♠", "♥", "♣"];
       const ordemTruco = ["4", "5", "6", "7", "Q", "J", "K", "A", "2", "3"];
 
+      // --- SISTEMA DE SOM ---
+      const SOUNDS = {
+        play: new Audio('https://assets.mixkit.co/active_storage/sfx/2017/2017-preview.mp3'),
+        shuffle: new Audio('https://assets.mixkit.co/active_storage/sfx/2813/2813-preview.mp3'), // Som de abrir garrafa (cerveja)
+        truco: new Audio('https://assets.mixkit.co/active_storage/sfx/212/212-preview.mp3'),
+        hover: new Audio('https://assets.mixkit.co/active_storage/sfx/1103/1103-preview.mp3') // Som de papel/carta sutil
+      };
+
+      function tocarSom(nome) {
+        if (SOUNDS[nome]) {
+          SOUNDS[nome].currentTime = 0;
+          SOUNDS[nome].play().catch(e => console.log("Som bloqueado pelo navegador até interação."));
+          
+          // Se for o som de hover, corta a duração para ser bem curtinho
+          if (nome === 'hover') {
+            setTimeout(() => {
+              SOUNDS[nome].pause();
+              SOUNDS[nome].currentTime = 0;
+            }, 150);
+          }
+        }
+      }
+
       // --- AVATARES SVG (Design Minimalista com Cores) ---
       // --- AVATARES SVG (Animais de Faroeste) ---
       const AVATARS = [
-        // 0: Cavalo
-        `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#a1887f"/><path d="M30 30 L30 15 L40 25 M70 30 L70 15 L60 25" stroke="#5d4037" stroke-width="5" fill="none"/><rect x="35" y="30" width="30" height="40" fill="#8d6e63"/><path d="M35 30 Q50 80 65 30" fill="#3e2723"/><circle cx="40" cy="45" r="4" fill="#000"/><circle cx="60" cy="45" r="4" fill="#000"/><path d="M40 60 Q50 70 60 60" stroke="#000" stroke-width="2" fill="none"/></svg>`,
-        // 1: Búfalo
-        `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#5d4037"/><path d="M20 40 Q10 20 40 30 M80 40 Q90 20 60 30" stroke="#f5f5f5" stroke-width="6" fill="none"/><circle cx="35" cy="55" r="4" fill="#000"/><circle cx="65" cy="55" r="4" fill="#000"/><rect x="40" y="65" width="20" height="10" rx="5" fill="#3e2723"/><circle cx="45" cy="70" r="2" fill="#000"/><circle cx="55" cy="70" r="2" fill="#000"/></svg>`,
-        // 2: Cobra
-        `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#2e7d32"/><path d="M30 60 Q50 90 70 60 Q90 30 50 30 Q30 30 30 50" stroke="#1b5e20" stroke-width="8" fill="none"/><circle cx="40" cy="40" r="3" fill="#ffeb3b"/><path d="M25 50 L15 55 L25 60" fill="#c0392b"/></svg>`,
-        // 3: Águia
-        `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#81d4fa"/><path d="M20 60 Q50 20 80 60 L50 90 Z" fill="#5d4037"/><path d="M50 20 L20 60 L80 60 Z" fill="#fff"/><circle cx="45" cy="50" r="4" fill="#000"/><path d="M55 50 L65 55 L55 60 Z" fill="#f1c40f"/></svg>`,
-        // 4: Escorpião
-        `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#e67e22"/><path d="M30 40 Q50 20 70 40" stroke="#3e2723" stroke-width="4" fill="none"/><path d="M30 40 L20 30 M70 40 L80 30" stroke="#3e2723" stroke-width="4"/><circle cx="50" cy="50" r="15" fill="#3e2723"/><path d="M50 65 Q60 85 80 50" stroke="#3e2723" stroke-width="4" fill="none"/><polygon points="80,50 85,45 85,55" fill="#c0392b"/></svg>`,
-        // 5: Tatu
-        `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#e0e0e0"/><path d="M20 50 Q50 10 80 50" fill="#8d6e63"/><path d="M25 50 L25 70 M75 50 L75 70" stroke="#8d6e63" stroke-width="5"/><circle cx="30" cy="55" r="2" fill="#000"/><path d="M20 50 Q50 30 80 50" stroke="#5d4037" stroke-width="2" fill="none"/></svg>`,
-        // 6: Coiote
-        `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#d7ccc8"/><path d="M20 20 L40 50 L50 40 L60 50 L80 20" fill="#8d6e63"/><circle cx="40" cy="60" r="4" fill="#000"/><circle cx="60" cy="60" r="4" fill="#000"/><path d="M50 70 L45 80 L55 80 Z" fill="#3e2723"/></svg>`,
-        // 7: Abutre
-        `<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" fill="#b0bec5"/><path d="M30 40 Q50 20 70 40" fill="#212121"/><rect x="45" y="40" width="10" height="30" fill="#e91e63"/><circle cx="50" cy="35" r="12" fill="#e91e63"/><circle cx="46" cy="32" r="2" fill="#fff"/><circle cx="54" cy="32" r="2" fill="#fff"/><path d="M48 40 L52 40 L50 45 Z" fill="#f1c40f"/></svg>`
+        `<img src="avatar4.png" style="width:100%; height:100%; object-fit:cover;" title="O Velho Jack">`,
+        `<img src="avatar1.png" style="width:100%; height:100%; object-fit:cover;" title="O Renegado">`,
+        `<img src="avatar2.png" style="width:100%; height:100%; object-fit:cover;" title="O Olho de Vidro">`,
+        `<img src="avatar3.png" style="width:100%; height:100%; object-fit:cover;" title="A Dama de Copas">`,
+        `<img src="avatar5.png" style="width:100%; height:100%; object-fit:cover;" title="O Foragido">`
       ];
 
       // Novas Globais
@@ -1263,7 +1351,14 @@
           criarSalaOnline();
         } else if (pendingRoomAction.type === "join") {
           entrarSalaOnline(pendingRoomAction.roomId);
+        } else if (pendingRoomAction.type === "offline") {
+          iniciarOffline();
         }
+      }
+
+      function prepararOffline() {
+        pendingRoomAction = { type: "offline" };
+        abrirModalNome();
       }
 
       function criarSalaOnline() {
@@ -1615,6 +1710,7 @@
           const div = criarCardUI(data.c, !data.isCoberta);
           div.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
           document.getElementById("centro-mesa").appendChild(div);
+          tocarSom('hover');
 
           renderMao(data.j);
 
@@ -1868,41 +1964,46 @@
         isOnline = false;
         document.getElementById("menu-inicial").style.display = "none";
         document.getElementById("sala-info").style.display = "block";
-        document.getElementById("btn-sair").style.display = "block"; // Mostrar Botão Sair
+        document.getElementById("btn-sair").style.display = "block"; 
         document.getElementById("sala-info").innerText =
           "Modo: Offline (Vs CPU)";
         document.getElementById("btn-start").style.display = "block";
-        // Gerar nomes aleatórios para os bots
+
         const nomesBots = [
-          "Tonhão",
-          "Zé da Manga",
-          "Chico Bento",
-          "Tião",
-          "Jurema",
-          "Lampiao",
-          "Maria Bonita",
-          "Jacinto",
-          "Cabo Daciolo",
-          "Tiririca",
+          "Tonhão", "Zé da Manga", "Chico Bento", "Tião", "Jurema",
+          "Lampiao", "Maria Bonita", "Jacinto", "Cabo Daciolo", "Tiririca"
         ];
-        const escolhidos = [];
-        // Eu:
-        const eu = { name: "Você", avatarId: 0, id: "local" };
-        const botsMap = { 0: eu };
-        while (escolhidos.length < 3) {
+        
+        // Sorteia nomes sem repetir
+        const nomesEscolhidos = [];
+        while (nomesEscolhidos.length < 3) {
           const r = nomesBots[Math.floor(Math.random() * nomesBots.length)];
-          if (!escolhidos.includes(r)) escolhidos.push(r);
+          if (!nomesEscolhidos.includes(r)) nomesEscolhidos.push(r);
         }
-        // Slots 1, 2, 3
+
+        // Sistema para não repetir Avatares
+        const avataresDisponiveis = [];
+        for(let i=0; i < AVATARS.length; i++) {
+          if (i !== selectedAvatarId) avataresDisponiveis.push(i);
+        }
+        // Embaralhar avatares disponíveis
+        avataresDisponiveis.sort(() => Math.random() - 0.5);
+
+        // Eu:
+        const eu = { name: myName || "Você", avatarId: selectedAvatarId, id: "local" };
+        const botsMap = { 0: eu };
+
+        // Slots 1, 2, 3 (Bots)
         for (let i = 1; i <= 3; i++) {
           botsMap[i] = {
-            name: escolhidos[i - 1],
-            avatarId: Math.floor(Math.random() * AVATARS.length),
+            name: nomesEscolhidos[i - 1],
+            avatarId: avataresDisponiveis.pop(), // Pega um avatar que não seja o meu e não se repita
             id: "bot" + i,
           };
         }
+
         window.currentPlayers = botsMap;
-        mySlot = 0; // Offline sempre 0
+        mySlot = 0; 
         atualizarNomesVisuais();
         document.getElementById("btn-start").innerText = "COMEÇAR JOGO";
         document.getElementById("btn-start").disabled = false;
@@ -2017,7 +2118,10 @@
           }
 
           const el = criarCardUI(c, showFront);
-          if (isMe && showFront) el.onclick = () => jogar(serverIdx, idx); // Click só nas minhas
+          if (isMe && showFront) {
+            el.onclick = () => jogar(serverIdx, idx);
+            el.onmouseenter = () => tocarSom('hover');
+          }
           cont.appendChild(el);
         });
       }
@@ -2140,6 +2244,7 @@
         const div = criarCardUI(c, !isCoberta);
         div.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
         document.getElementById("centro-mesa").appendChild(div);
+        tocarSom('hover'); // Toca o mesmo som curto ao jogar a carta na mesa
 
         renderMao(j);
 
