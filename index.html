@@ -60,21 +60,21 @@
       #painel-controle {
         width: 180px;
         padding: 20px 15px;
-        /* Papel envelhecido/madeira clara */
+        /* Madeira mais escura e rústica */
         background: 
-            linear-gradient(rgba(245, 222, 179, 0.4), rgba(245, 222, 179, 0.4)),
+            linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
             url('mesa_madeira.png') center/cover no-repeat;
-        filter: sepia(0.3) brightness(1.05); /* Combina com a Fronteira Árida */
+        filter: sepia(0.2) brightness(0.85); 
         border-radius: 8px;
         margin-right: 25px;
         text-align: center;
-        border: 4px solid #6d4c41;
+        border: 4px solid #3e2723;
         box-shadow: 
-            0 10px 30px rgba(0,0,0,0.5),
-            inset 0 0 20px rgba(0,0,0,0.2);
-        color: #1a0f00; /* Marrom quase preto para máximo destaque */
+            0 10px 30px rgba(0,0,0,0.6),
+            inset 0 0 40px rgba(0,0,0,0.7);
+        color: #f1c40f; /* Cor dourada para o texto para destacar no fundo escuro */
         font-weight: 700;
-        text-shadow: 0 1px 1px rgba(255,255,255,0.3);
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
         position: relative;
         z-index: 50;
       }
@@ -93,10 +93,10 @@
         font-size: 48px;
         font-weight: 900;
         margin-bottom: -5px;
-        color: #2c1810;
+        color: #f1c40f;
         text-shadow: 
-            2px 2px 0px rgba(255,255,255,0.2),
-            0px 0px 5px rgba(0,0,0,0.1);
+            2px 2px 4px rgba(0,0,0,0.8),
+            0px 0px 10px rgba(241, 196, 15, 0.3);
       }
 
       #contador-rodadas {
@@ -150,21 +150,21 @@
       }
 
       #mesa {
-        width: 850px;
-        height: 550px;
-        /* Madeira rústica de Velho Oeste - Estilo Fronteira Árida */
+        width: 1000px;
+        height: 650px;
+        /* Mesma cor e estilo do painel-controle/placar */
         background: 
-            linear-gradient(rgba(245, 222, 179, 0.05), rgba(245, 222, 179, 0.05)),
+            linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
             url('mesa_madeira.png') center/cover no-repeat;
-        filter: sepia(0.4) brightness(0.9) contrast(0.95) grayscale(0.2);
+        filter: sepia(0.2) brightness(0.85); 
         position: relative;
         border-radius: 120px; 
-        border: 25px solid #6d4c41;
+        border: 25px solid #3e2723;
         box-shadow: 
             inset 0 0 100px rgba(0,0,0,0.4),
             0 30px 60px rgba(0,0,0,0.6),
-            0 0 0 8px #5d4037,
-            0 0 0 12px #8d6e63;
+            0 0 0 8px #2c1810,
+            0 0 0 12px #3e2723;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -184,8 +184,8 @@
 
       #vira-slot {
         position: relative;
-        width: 50px;
-        height: 75px;
+        width: 70px;
+        height: 105px;
       }
 
       .baralho-decor {
@@ -206,7 +206,7 @@
         flex-direction: column;
         align-items: center;
         z-index: 20;
-        width: 80px;
+        width: 100px;
       }
       .cartas {
         display: flex;
@@ -282,12 +282,12 @@
       }
 
       .oeste .cartas {
-        left: 140%; /* Afasta do avatar */
+        left: 80%; /* Mais perto do avatar */
         transform: translateY(-50%) rotate(90deg);
         transform-origin: center center;
       }
       .leste .cartas {
-        right: 140%; /* Afasta do avatar */
+        right: 80%; /* Mais perto do avatar */
         transform: translateY(-50%) rotate(-90deg);
         transform-origin: center center;
       }
@@ -353,8 +353,8 @@
       }
 
       .carta {
-        width: 55px;
-        height: 82px;
+        width: 70px;
+        height: 105px;
         /* Papel envelhecido/pergaminho */
         background: #fdf5e6;
         background-image: 
@@ -368,7 +368,7 @@
         justify-content: center;
         font-family: 'Rye', serif;
         font-weight: bold;
-        font-size: 18px;
+        font-size: 24px;
         border: 1px solid #d4a373;
         box-shadow: 
             2px 2px 5px rgba(0, 0, 0, 0.4),
@@ -422,14 +422,14 @@
       }
 
       #centro-mesa {
-        width: 320px;
-        height: 200px;
+        width: 450px;
+        height: 300px;
         background: rgba(0, 0, 0, 0.15);
-        border-radius: 40px;
+        border-radius: 60px;
         display: flex;
         justify-content: center;
         align-items: center;
-        gap: 10px;
+        gap: 15px;
         position: relative;
         box-shadow: inset 0 0 40px rgba(0,0,0,0.4);
         border: 1px solid rgba(255,255,255,0.03);
@@ -545,17 +545,66 @@
       
       .brand-title {
          font-family: 'Rye', serif;
-         font-size: 80px;
-         margin-bottom: 50px;
+         font-size: 45px; /* Ajuste fino: reduzido de 60px para 45px */
+         margin-bottom: 40px;
          color: #ffb74d;
          text-shadow: 
             3px 3px 0px #3e2723, 
             6px 6px 0px rgba(0,0,0,0.5);
          letter-spacing: 2px;
          text-transform: uppercase;
-         position: relative; z-index: 2;
-         display: flex; align-items: center; gap: 20px;
+         position: relative; 
+         z-index: 2;
+         display: flex; 
+         flex-direction: column; /* Coloca as cartas acima do texto para melhor centralização */
+         align-items: center; 
+         justify-content: center; 
+         gap: 15px;
+         text-align: center;
       }
+
+      .title-cards-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        width: 120px; /* Um pouco mais largo para as cartas não cortarem */
+        height: 100px;
+        margin-bottom: 10px; /* Espaço para o texto abaixo */
+      }
+
+      .title-card {
+        position: absolute;
+        width: 70px;
+        height: 105px;
+        background: #fdf5e6;
+        border: 2px solid #d4a373;
+        border-radius: 5px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Rye', serif;
+        font-size: 30px;
+        color: #2c1810;
+        box-shadow: 3px 3px 10px rgba(0,0,0,0.6);
+        background-image: 
+            linear-gradient(135deg, rgba(139, 69, 19, 0.1) 0%, transparent 100%),
+            url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPSc0JyBoZWlnaHQ9JzQnIGZpbGwtb3BhY2l0eT0nMC4wNSc+PHJlY3Qgd2lkdGg9JzInIGhlaWdodD0nMicvPjwvc3ZnPg==');
+        transition: transform 0.3s;
+      }
+
+      .title-card .naipe {
+        font-size: 16px;
+        margin-top: -5px;
+      }
+
+      .title-card:nth-child(1) { transform: rotate(-15deg) translateX(-30px); z-index: 1; }
+      .title-card:nth-child(2) { transform: rotate(0deg); z-index: 2; }
+      .title-card:nth-child(3) { transform: rotate(15deg) translateX(30px); z-index: 3; }
+      
+      .brand-title:hover .title-card:nth-child(1) { transform: rotate(-25deg) translateX(-45px); }
+      .brand-title:hover .title-card:nth-child(3) { transform: rotate(25deg) translateX(45px); }
 
       .btn-menu {
         padding: 20px 40px;
@@ -695,8 +744,8 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 80px;
-        height: 80px;
+        width: 100px;
+        height: 100px;
         background: rgba(255, 255, 255, 0.1);
         border-radius: 50%;
         cursor: pointer;
@@ -725,8 +774,8 @@
         background: rgba(0, 0, 0, 0.5);
       }
       .cadeira-lobby .avatar-preview {
-        width: 60px;
-        height: 60px;
+        width: 80px;
+        height: 80px;
         border-radius: 50%;
         overflow: hidden;
         display: none;
@@ -736,8 +785,8 @@
       }
 
       .avatar-mesa {
-        width: 50px;
-        height: 50px;
+        width: 70px;
+        height: 70px;
         border-radius: 50%;
         border: 2px solid #fff;
         background: #222;
@@ -780,10 +829,10 @@
   </head>
   <body>
     <div id="painel-controle">
-      <div style="color: #1e8449; font-weight: 900; letter-spacing: 1px;">
+      <div style="color: #2ecc71; font-weight: 900; letter-spacing: 1px;">
         NÓS: <span id="p-nos" class="score">0</span>
       </div>
-      <div style="color: #21618c; font-weight: 900; letter-spacing: 1px;">
+      <div style="color: #3498db; font-weight: 900; letter-spacing: 1px;">
         ELES: <span id="p-eles" class="score">0</span>
       </div>
 
@@ -793,8 +842,8 @@
         <div id="queda-2" class="queda-dot"></div>
       </div>
 
-      <hr style="opacity: 0.3; border: 0; border-top: 1px solid #1a0f00; margin: 10px 0;" />
-      <div style="font-size: 11px; font-weight: 900; margin-bottom: 8px; color: #1a0f00; text-transform: uppercase; letter-spacing: 1px;">
+      <hr style="opacity: 0.3; border: 0; border-top: 1px solid #f1c40f; margin: 10px 0;" />
+      <div style="font-size: 11px; font-weight: 900; margin-bottom: 8px; color: #f1c40f; text-transform: uppercase; letter-spacing: 1px;">
         PARTIDAS GANHAS
       </div>
       <div
@@ -807,10 +856,10 @@
           margin-bottom: 10px;
         "
       >
-        <span style="color: #1e8449"
+        <span style="color: #2ecc71"
           >NÓS: <span id="win-nos">0</span></span
         >
-        <span style="color: #21618c"
+        <span style="color: #3498db"
           >ELES: <span id="win-eles">0</span></span
         >
       </div>
@@ -892,21 +941,17 @@
       <div class="jogador norte" id="j2">
         <div class="cartas"></div>
         <span class="nome-j" style="color: var(--cor-nos)">PARCEIRO</span>
-        <span class="score-tag">0</span>
       </div>
       <div class="jogador oeste" id="j1">
         <div class="cartas"></div>
         <span class="nome-j" style="color: var(--cor-eles)">OPONENTE 1</span>
-        <span class="score-tag">0</span>
       </div>
       <div class="jogador leste" id="j3">
         <div class="cartas"></div>
         <span class="nome-j" style="color: var(--cor-eles)">OPONENTE 2</span>
-        <span class="score-tag">0</span>
       </div>
       <div class="jogador sul" id="j0">
         <span class="nome-j" style="color: var(--cor-nos)">VOCÊ</span>
-        <span class="score-tag">0</span>
         <div class="cartas"></div>
         <button id="btn-coberta" onclick="toggleModoCoberta()">
           JOGAR COBERTA
@@ -946,16 +991,21 @@
     </button>
 
     <div id="menu-inicial">
-      <h1
-        style="
-          font-size: 50px;
-          margin-bottom: 40px;
-          color: var(--gold);
-          text-shadow: 0 0 20px var(--gold);
-          font-family: 'Rye', serif;
-          text-align: center;
-        "
-      >
+      <h1 class="brand-title">
+        <div class="title-cards-container">
+          <div class="title-card">
+            <span>4</span>
+            <span class="naipe" style="color: #2c1810">♣</span>
+          </div>
+          <div class="title-card">
+            <span style="color: #c0392b">7</span>
+            <span class="naipe" style="color: #c0392b">♥</span>
+          </div>
+          <div class="title-card">
+            <span>A</span>
+            <span class="naipe" style="color: #2c1810">♠</span>
+          </div>
+        </div>
         FTC - Faroeste Truco Championship
       </h1>
       <button class="btn-menu btn-vs-pc" onclick="prepararOffline()">
